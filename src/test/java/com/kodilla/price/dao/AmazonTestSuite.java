@@ -1,8 +1,8 @@
 package com.kodilla.price.dao;
 
-import com.kodilla.price.entity.Allegro;
+import com.kodilla.price.entity.Amazon;
 import com.kodilla.price.entity.User;
-import com.kodilla.price.repository.AllegroDao;
+import com.kodilla.price.repository.AmazonDao;
 import com.kodilla.price.repository.UserDao;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -17,16 +17,14 @@ import java.util.ArrayList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-@SpringBootTest
 @RunWith(SpringRunner.class)
-public class AllegroTestSuite {
+@SpringBootTest
+public class AmazonTestSuite {
 
     @Autowired
-    private AllegroDao allegroDao;
-
+    private AmazonDao amazonDao;
     @Autowired
     private UserDao userDao;
-
 
     @Test
     public void saveOfferTest() {
@@ -38,24 +36,24 @@ public class AllegroTestSuite {
                 .login("testLogin")
                 .password("testPassword")
                 .build();
-        Allegro allegro = Allegro.builder()
-                .allegroID("1234")
+        Amazon amazon = Amazon.builder()
+                .amazonID("1234")
                 .productName("TestProduct")
                 .expirationDate(LocalDate.of(2025, Month.DECEMBER, 25))
                 .userEntityList(new ArrayList<>())
                 .build();
-        allegro.getUserEntityList().add(user);
+        amazon.getUserEntityList().add(user);
 
         //When
-        Allegro savedAllegro = allegroDao.save(allegro);
+        Amazon savedAmazon = amazonDao.save(amazon);
 
         //Then
-        assertEquals(savedAllegro.getAllegroID(), allegro.getAllegroID());
-        assertEquals(savedAllegro.getUserEntityList().get(0).getLogin(), allegro.getUserEntityList().get(0).getLogin());
-        allegroDao.deleteById(savedAllegro.getId());
-        userDao.deleteById(savedAllegro.getUserEntityList().get(0).getId());
-        assertFalse(allegroDao.findById(savedAllegro.getId()).isPresent());
-        assertFalse(userDao.findById(savedAllegro.getUserEntityList().get(0).getId()).isPresent());
+        assertEquals(savedAmazon.getAmazonID(), amazon.getAmazonID());
+        assertEquals(savedAmazon.getUserEntityList().get(0).getLogin(), amazon.getUserEntityList().get(0).getLogin());
+        amazonDao.deleteById(savedAmazon.getId());
+        userDao.deleteById(savedAmazon.getUserEntityList().get(0).getId());
+        assertFalse(amazonDao.findById(savedAmazon.getId()).isPresent());
+        assertFalse(userDao.findById(savedAmazon.getUserEntityList().get(0).getId()).isPresent());
     }
 
     @Test
@@ -68,25 +66,27 @@ public class AllegroTestSuite {
                 .login("testLogin")
                 .password("testPassword")
                 .build();
-        Allegro allegro = Allegro.builder()
-                .allegroID("1234")
+        Amazon amazon = Amazon.builder()
+                .amazonID("1234")
                 .productName("TestProduct")
                 .expirationDate(LocalDate.of(2025, Month.DECEMBER, 25))
                 .userEntityList(new ArrayList<>())
                 .build();
-        allegro.getUserEntityList().add(user);
+        amazon.getUserEntityList().add(user);
 
         //When
-        Allegro savedAllegro = allegroDao.save(allegro);
-        Allegro foundAllegro = allegroDao.findById(savedAllegro.getId()).orElse(null);
+        Amazon savedAmazon = amazonDao.save(amazon);
+        Amazon foundAmazon = amazonDao.findById(savedAmazon.getId()).orElse(null);
 
         //Then
-        assertEquals(foundAllegro.getAllegroID(), allegro.getAllegroID());
-        allegroDao.deleteById(savedAllegro.getId());
-        userDao.deleteById(savedAllegro.getUserEntityList().get(0).getId());
-        assertFalse(allegroDao.findById(savedAllegro.getId()).isPresent());
-        assertFalse(userDao.findById(savedAllegro.getUserEntityList().get(0).getId()).isPresent());
+        assertEquals(foundAmazon.getAmazonID(), amazon.getAmazonID());
+        amazonDao.deleteById(savedAmazon.getId());
+        userDao.deleteById(savedAmazon.getUserEntityList().get(0).getId());
+        assertFalse(amazonDao.findById(savedAmazon.getId()).isPresent());
+        assertFalse(userDao.findById(savedAmazon.getUserEntityList().get(0).getId()).isPresent());
 
 
     }
+
+
 }
