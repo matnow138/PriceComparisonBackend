@@ -18,8 +18,8 @@ import java.util.List;
 @AllArgsConstructor
 public class Amazon {
 
-    @NotNull
-    private final LocalDate addedDate = LocalDate.now();
+    @Builder.Default
+    private LocalDate addedDate = LocalDate.now();
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;

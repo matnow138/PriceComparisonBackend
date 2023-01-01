@@ -17,8 +17,8 @@ import java.util.List;
 @Builder
 public class Allegro {
 
-    @NotNull
-    private final LocalDate addedDate = LocalDate.now();
+    @Builder.Default
+    private LocalDate addedDate = LocalDate.now();
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
