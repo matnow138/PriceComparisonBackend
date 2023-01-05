@@ -13,8 +13,9 @@ public class AmazonController {
     private final AmazonService amazonService;
 
     @GetMapping
-    public void getProduct(@RequestParam String id) throws Exception{
-        amazonService.getProduct(id);
+    @ResponseBody
+    public String getProduct(@RequestParam String id) throws Exception{
+        return amazonService.getProduct(id);
 
     }
 }

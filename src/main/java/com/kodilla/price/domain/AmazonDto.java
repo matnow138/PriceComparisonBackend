@@ -6,6 +6,7 @@ import com.kodilla.price.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -14,7 +15,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @Builder
-@JsonFormat(shape = JsonFormat.Shape.ARRAY)
+@NoArgsConstructor
 public class AmazonDto {
 
     @JsonProperty("asin")
