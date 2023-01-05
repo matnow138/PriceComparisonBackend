@@ -40,14 +40,6 @@ public class User {
     private boolean isActive = true;
 
 
-    @ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "allegro_offers",
-            joinColumns = {@JoinColumn(name = "allegro_id", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")}
-    )
-    @Builder.Default
-    private List<Allegro> allegroList = new ArrayList<>();
 
     @ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     @JoinTable(

@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -24,10 +25,11 @@ public class Amazon {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     @NotNull
-    private String amazonID;
-    private String productName;
-    @NotNull
-    private LocalDate expirationDate;
+    private String asin;
+    private String product_name;
+    private BigDecimal current_price;
+    private String locale;
+    private String currency_symbol;
 
     @ManyToMany(
             mappedBy = "amazonList",
