@@ -30,6 +30,7 @@ public class Amazon {
     private BigDecimal current_price;
     private String locale;
     private String currency_symbol;
+    private double targetPrice;
 
     @ManyToMany(
             mappedBy = "amazonList",

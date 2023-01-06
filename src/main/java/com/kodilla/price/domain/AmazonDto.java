@@ -18,6 +18,7 @@ import java.util.List;
 @NoArgsConstructor
 public class AmazonDto {
 
+    private long id;
     @JsonProperty("asin")
     private String asin;
     @JsonProperty("product_name")
@@ -28,6 +29,7 @@ public class AmazonDto {
     private String locale;
     @JsonProperty("currency_symbol")
     private String currency_symbol;
+    private double targetPrice;
 
 
 

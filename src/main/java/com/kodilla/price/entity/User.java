@@ -44,11 +44,10 @@ public class User {
     @ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     @JoinTable(
             name = "amazon_offers",
-            joinColumns = {@JoinColumn(name = "amazon_id", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")}
+            joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "amazon_id", referencedColumnName = "id")}
     )
-    @Builder.Default
-    private List<Amazon> amazonList = new ArrayList<>();
+    private List<Amazon> amazonList;
 
 
 }

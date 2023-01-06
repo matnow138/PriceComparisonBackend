@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
+
 @AllArgsConstructor
 @RestController
 @RequestMapping("v1/amazon")
@@ -14,8 +16,8 @@ public class AmazonController {
 
     @GetMapping
     @ResponseBody
-    public String getProduct(@RequestParam String id) throws Exception{
-        return amazonService.getProduct(id);
-
+    public ResponseEntity<Void> addProduct(@RequestParam String id, long userID, double targetPrice) throws Exception{
+        amazonService.getProduct(id, userID, targetPrice);
+        return ResponseEntity.ok().build();
     }
 }

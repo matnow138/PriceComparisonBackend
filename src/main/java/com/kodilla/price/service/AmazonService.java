@@ -5,13 +5,17 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.kodilla.price.domain.AmazonDto;
+import com.kodilla.price.entity.Amazon;
+import com.kodilla.price.entity.User;
 import com.kodilla.price.mapper.AmazonMapper;
 import com.kodilla.price.repository.AmazonDao;
+import com.kodilla.price.repository.UserDao;
 import lombok.RequiredArgsConstructor;
 import org.apache.http.client.utils.URIBuilder;
 import org.springframework.stereotype.Service;
 
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.http.HttpClient;
@@ -25,25 +29,13 @@ public class AmazonService {
 
     private final AmazonDao amazonDao;
     private final AmazonMapper amazonMapper;
+    private final UserDao userDao;
     private final ObjectMapper mapper = new ObjectMapper()
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
       private final ObjectReader arrayReader = mapper.readerForArrayOf(AmazonDto.class);
 
 
-    public String getProduct(String id) throws Exception {
-      /*  String host = "https://amazon-product-price-data.p.rapidapi.com/product";
-        String charset = "UTF-8";
-
-        String x_rapidapi_host = "amazon-product-price-data.p.rapidapi.com";
-        String x_rapidapi_key = "6922f7cae5mshe70274cbda6fed3p13cf1cjsnb65c3e41e70e";
-
-       String asins = "asins=";
-       String locale = "&locale=US";
-       HttpResponse<String> response = Unirest.get(host + "?" + asins +id + locale)
-               .header("X-RapidAPI-Key",x_rapidapi_key)
-               .header("X-RapidAPI-Host",x_rapidapi_host)
-               .asString();
-*/
+    public void getProduct(String id, long userID, double targetPrice) throws Exception {
 
         HttpRequest request = createRequestForProduct(id);
         HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
@@ -51,7 +43,19 @@ public class AmazonService {
         String body = response.body();
         System.out.println(body);
         AmazonDto[] productsArrayNode = arrayReader.readValue(body, AmazonDto[].class);
-        return productsArrayNode[0].toString();
+        Amazon amazon = amazonMapper.mapToAmazon(productsArrayNode[0]);
+        try {
+
+            User user = userDao.findById(userID).orElse(null);
+            user.getAmazonList().add(amazon);
+            //userDao.save(user);
+            //amazon.getUserEntityList().add(user);
+        }catch (Exception e){
+            System.out.println("User not found");
+        }
+        amazon.setTargetPrice(targetPrice);
+        amazonDao.save(amazon);
+
     }
 
     private static HttpRequest createRequestForProduct(String id) throws URISyntaxException {
