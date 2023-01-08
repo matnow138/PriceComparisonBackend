@@ -26,4 +26,5 @@ public class Nbp {
     private BigDecimal exchangeRate;
     private LocalDate addedDate;
 
+
 }

@@ -35,7 +35,7 @@ public class AmazonService {
       private final ObjectReader arrayReader = mapper.readerForArrayOf(AmazonDto.class);
 
 
-    public void getProduct(String id, long userID, double targetPrice) throws Exception {
+    public void getProduct(String id, long userID, BigDecimal targetPrice) throws Exception {
 
         HttpRequest request = createRequestForProduct(id);
         HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
@@ -43,13 +43,13 @@ public class AmazonService {
         String body = response.body();
         System.out.println(body);
         AmazonDto[] productsArrayNode = arrayReader.readValue(body, AmazonDto[].class);
+
         Amazon amazon = amazonMapper.mapToAmazon(productsArrayNode[0]);
         try {
 
             User user = userDao.findById(userID).orElse(null);
             user.getAmazonList().add(amazon);
-            //userDao.save(user);
-            //amazon.getUserEntityList().add(user);
+
         }catch (Exception e){
             System.out.println("User not found");
         }

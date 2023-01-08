@@ -12,4 +12,6 @@ public interface NbpDao extends CrudRepository<Nbp, Long> {
     Nbp save(Nbp nbp);
 
     Optional<Nbp> findById(long id);
+
+    Optional<Nbp> findByCurrency(String currency);
 }

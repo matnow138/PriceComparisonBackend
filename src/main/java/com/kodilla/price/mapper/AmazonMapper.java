@@ -12,11 +12,11 @@ public class AmazonMapper {
     public Amazon mapToAmazon(AmazonDto amazonDto){
         return Amazon.builder()
                 .asin(amazonDto.getAsin())
-                .product_name(amazonDto.getProduct_name())
+                .productName(amazonDto.getProduct_name())
                 .addedDate(LocalDate.now())
-                .current_price(amazonDto.getCurrent_price())
+                .currentPrice(amazonDto.getCurrentPrice())
                 .locale(amazonDto.getLocale())
-                .currency_symbol(amazonDto.getCurrency_symbol())
+                .currencySymbol(amazonDto.getCurrency_symbol())
                 .build();
     }
 

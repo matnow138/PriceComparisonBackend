@@ -2,6 +2,7 @@ package com.kodilla.price.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.gson.annotations.SerializedName;
 import com.kodilla.price.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,12 +25,12 @@ public class AmazonDto {
     @JsonProperty("product_name")
     private String product_name;
     @JsonProperty("current_price")
-    private BigDecimal current_price;
+    private BigDecimal currentPrice;
     @JsonProperty("locale")
     private String locale;
-    @JsonProperty("currency_symbol")
+    @SerializedName("currency_symbol")
     private String currency_symbol;
-    private double targetPrice;
+    private BigDecimal targetPrice;
 
 
 

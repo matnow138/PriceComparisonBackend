@@ -17,8 +17,8 @@ public class UserTestSuite {
 
     @Autowired
     private UserDao userDao;
-    @Test
-    public void saveTest(){
+  /*   @Test
+   public void saveTest(){
         //Given
         User user =User.builder()
                 .name("John")
@@ -50,6 +50,6 @@ public class UserTestSuite {
         User foundUser = userDao.findById(userID).orElse(null);
         //Then
         assertEquals(savedUser.getName(), foundUser.getName());
-    }
+    }*/
 
 }

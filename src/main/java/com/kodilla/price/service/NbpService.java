@@ -28,22 +28,15 @@ public class NbpService {
     private final ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);;
 
 
-    public void getCurrency(String currency) throws Exception{
+    public NbpDto getCurrency(String currency) throws Exception{
         HttpRequest request = createRequestForProduct(currency);
         HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
 
         String body = response.body();
         System.out.println(body);
-        NbpDto result = new ObjectMapper().readValue(body, NbpDto.class);
-        Nbp nbp = nbpMapper.mapToNbp(result);
-        nbpDao.save(nbp);
+        NbpDto nbpDto = new ObjectMapper().readValue(body, NbpDto.class);
 
-
-
-
-
-
-
+        return nbpDto;
 
     }
 

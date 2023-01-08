@@ -1,9 +1,6 @@
 package com.kodilla.price.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -12,13 +9,14 @@ import java.time.LocalDate;
 import java.util.List;
 
 
-@Data
+@Getter
+@Setter
 @Entity
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Amazon {
-
+    @Column(name ="AddedDate")
     @Builder.Default
     private LocalDate addedDate = LocalDate.now();
     @Id
@@ -26,11 +24,15 @@ public class Amazon {
     private long id;
     @NotNull
     private String asin;
-    private String product_name;
-    private BigDecimal current_price;
+    @Column(name ="ProductName")
+    private String productName;
+    @Column(name ="CurentPrice")
+    private BigDecimal currentPrice;
     private String locale;
-    private String currency_symbol;
-    private double targetPrice;
+    @Column(name ="CurrencySymbol")
+    private String currencySymbol;
+    @Column(name ="TargetPrice")
+    private BigDecimal targetPrice;
 
     @ManyToMany(
             mappedBy = "amazonList",
