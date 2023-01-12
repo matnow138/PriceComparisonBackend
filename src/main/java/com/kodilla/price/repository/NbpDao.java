@@ -1,6 +1,5 @@
 package com.kodilla.price.repository;
 
-import com.kodilla.price.entity.Amazon;
 import com.kodilla.price.entity.Nbp;
 import org.springframework.data.repository.CrudRepository;
 

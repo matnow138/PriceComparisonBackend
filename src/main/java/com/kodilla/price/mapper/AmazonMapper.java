@@ -1,7 +1,7 @@
 package com.kodilla.price.mapper;
 
-import com.kodilla.price.domain.AmazonDto;
-import com.kodilla.price.entity.Amazon;
+import com.kodilla.price.domain.AmazonOfferDto;
+import com.kodilla.price.entity.AmazonOffer;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -9,14 +9,15 @@ import java.time.LocalDate;
 @Service
 public class AmazonMapper {
 
-    public Amazon mapToAmazon(AmazonDto amazonDto){
-        return Amazon.builder()
-                .asin(amazonDto.getAsin())
-                .productName(amazonDto.getProduct_name())
+    public AmazonOffer mapToAmazon(AmazonOfferDto amazonOfferDto){
+        return AmazonOffer.builder()
+                .asin(amazonOfferDto.getAsin())
+                .productName(amazonOfferDto.getProduct_name())
                 .addedDate(LocalDate.now())
-                .currentPrice(amazonDto.getCurrentPrice())
-                .locale(amazonDto.getLocale())
-                .currencySymbol(amazonDto.getCurrency_symbol())
+                .currentPrice(amazonOfferDto.getCurrentPrice())
+                .locale(amazonOfferDto.getLocale())
+                .currencySymbol(amazonOfferDto.getCurrency_symbol())
+                .targetPrice(amazonOfferDto.getTargetPrice())
                 .build();
     }
 

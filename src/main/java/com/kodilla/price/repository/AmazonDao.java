@@ -1,17 +1,23 @@
 package com.kodilla.price.repository;
 
-import com.kodilla.price.entity.Amazon;
+import com.kodilla.price.entity.AmazonOffer;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface AmazonDao extends CrudRepository<Amazon, Long> {
+public interface AmazonDao extends CrudRepository<AmazonOffer, Long> {
 
     @Override
-    Amazon save(Amazon amazon);
+    AmazonOffer save(AmazonOffer amazonOffer);
 
-    Optional<Amazon> findById(long id);
+    @Query(
+            value = "SELECT * FROM amazonoffer",
+            nativeQuery = true)
+    List<AmazonOffer> getAll();
 
-    List<Amazon> findAllByCurrencySymbol(String CurrencySymbol);
+    Optional<AmazonOffer> findById(long id);
+
+    List<AmazonOffer> findAllByCurrencySymbol(String CurrencySymbol);
 }

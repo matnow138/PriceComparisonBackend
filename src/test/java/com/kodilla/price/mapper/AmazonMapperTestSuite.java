@@ -1,16 +1,9 @@
 package com.kodilla.price.mapper;
 
-import com.kodilla.price.domain.AmazonDto;
-import com.kodilla.price.entity.Amazon;
-import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import java.time.LocalDate;
-import java.time.Month;
-import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -24,7 +17,7 @@ public class AmazonMapperTestSuite {
    /* @Test
     public void mapToAmazonTest(){
         //Given
-        AmazonDto amazonDto = AmazonDto.builder()
+        AmazonOfferDto amazonDto = AmazonOfferDto.builder()
                 .asin("1234")
                 .productName("TestProduct")
                 .expirationDate(LocalDate.of(2025, Month.DECEMBER, 25))
@@ -32,7 +25,7 @@ public class AmazonMapperTestSuite {
                 .build();
 
         //When
-        Amazon amazon = amazonMapper.mapToAmazon(amazonDto);
+        AmazonOffer amazon = amazonMapper.mapToAmazon(amazonDto);
 
         //Then
         assertEquals(amazon.getAmazonID(),amazonDto.getAmazonID());
@@ -41,7 +34,7 @@ public class AmazonMapperTestSuite {
     @Test
     public void mapToAmazonDtoTest(){
         //Given
-        Amazon amazon = Amazon.builder()
+        AmazonOffer amazon = AmazonOffer.builder()
                 .amazonID("1234")
                 .productName("TestProduct")
                 .expirationDate(LocalDate.of(2025, Month.DECEMBER, 25))
@@ -49,7 +42,7 @@ public class AmazonMapperTestSuite {
                 .build();
 
         //When
-        AmazonDto amazonDto = amazonMapper.mapToAmazonDto(amazon);
+        AmazonOfferDto amazonDto = amazonMapper.mapToAmazonDto(amazon);
 
         //Then
         assertEquals(amazon.getAmazonID(),amazonDto.getAmazonID());

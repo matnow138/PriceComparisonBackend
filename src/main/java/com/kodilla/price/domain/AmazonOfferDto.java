@@ -1,23 +1,19 @@
 package com.kodilla.price.domain;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.gson.annotations.SerializedName;
-import com.kodilla.price.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.List;
 
 @Data
 @AllArgsConstructor
 @Builder
 @NoArgsConstructor
-public class AmazonDto {
+public class AmazonOfferDto {
 
     private long id;
     @JsonProperty("asin")

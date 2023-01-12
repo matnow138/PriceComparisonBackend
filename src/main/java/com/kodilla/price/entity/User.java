@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -47,7 +46,7 @@ public class User {
             joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "amazon_id", referencedColumnName = "id")}
     )
-    private List<Amazon> amazonList;
+    private List<AmazonOffer> amazonOfferList;
 
 
 }

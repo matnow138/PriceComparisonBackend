@@ -25,7 +25,7 @@ public class NbpService {
 
     private final NbpDao nbpDao;
     private final NbpMapper nbpMapper;
-    private final ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);;
+    private final ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
 
     public NbpDto getCurrency(String currency) throws Exception{
@@ -33,7 +33,7 @@ public class NbpService {
         HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
 
         String body = response.body();
-        System.out.println(body);
+        //System.out.println(body);
         NbpDto nbpDto = new ObjectMapper().readValue(body, NbpDto.class);
 
         return nbpDto;

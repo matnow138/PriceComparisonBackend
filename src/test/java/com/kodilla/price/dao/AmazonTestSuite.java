@@ -1,18 +1,11 @@
 package com.kodilla.price.dao;
 
-import com.kodilla.price.entity.Amazon;
-import com.kodilla.price.entity.User;
 import com.kodilla.price.repository.AmazonDao;
 import com.kodilla.price.repository.UserDao;
-import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import java.time.LocalDate;
-import java.time.Month;
-import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -36,7 +29,7 @@ public class AmazonTestSuite {
                 .login("testLogin")
                 .password("testPassword")
                 .build();
-        Amazon amazon = Amazon.builder()
+        AmazonOffer amazon = AmazonOffer.builder()
                 .asin("1234")
                 .productName("TestProduct")
                 .userEntityList(new ArrayList<>())
@@ -44,7 +37,7 @@ public class AmazonTestSuite {
         amazon.getUserEntityList().add(user);
 
         //When
-        Amazon savedAmazon = amazonDao.save(amazon);
+        AmazonOffer savedAmazon = amazonDao.save(amazon);
 
         //Then
         assertEquals(savedAmazon.getAsin(), amazon.getAsin());
@@ -65,7 +58,7 @@ public class AmazonTestSuite {
                 .login("testLogin")
                 .password("testPassword")
                 .build();
-        Amazon amazon = Amazon.builder()
+        AmazonOffer amazon = AmazonOffer.builder()
                 .asin("1234")
                 .productName("TestProduct")
                 .userEntityList(new ArrayList<>())
@@ -73,8 +66,8 @@ public class AmazonTestSuite {
         amazon.getUserEntityList().add(user);
 
         //When
-        Amazon savedAmazon = amazonDao.save(amazon);
-        Amazon foundAmazon = amazonDao.findById(savedAmazon.getId()).orElse(null);
+        AmazonOffer savedAmazon = amazonDao.save(amazon);
+        AmazonOffer foundAmazon = amazonDao.findById(savedAmazon.getId()).orElse(null);
 
         //Then
         assertEquals(foundAmazon.getAsin(), amazon.getAsin());

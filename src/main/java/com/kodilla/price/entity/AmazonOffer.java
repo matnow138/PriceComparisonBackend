@@ -15,7 +15,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Amazon {
+public class AmazonOffer {
     @Column(name ="AddedDate")
     @Builder.Default
     private LocalDate addedDate = LocalDate.now();
@@ -35,7 +35,7 @@ public class Amazon {
     private BigDecimal targetPrice;
 
     @ManyToMany(
-            mappedBy = "amazonList",
+            mappedBy = "amazonOfferList",
             fetch = FetchType.LAZY,
             cascade = CascadeType.PERSIST
     )
