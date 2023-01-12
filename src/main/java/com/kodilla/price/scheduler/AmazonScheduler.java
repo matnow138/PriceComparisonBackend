@@ -5,15 +5,23 @@ import com.kodilla.price.mailer.Mailer;
 import com.kodilla.price.repository.AmazonDao;
 import com.kodilla.price.service.AmazonService;
 import lombok.RequiredArgsConstructor;
+import org.javamoney.moneta.FastMoney;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 
+import javax.money.CurrencyUnit;
+import javax.money.MonetaryAmount;
 import java.math.BigDecimal;
+import java.net.URISyntaxException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 @RequiredArgsConstructor
 @EnableScheduling
@@ -25,28 +33,34 @@ public class AmazonScheduler {
     private final CheckPrices checkPrices;
     private final Mailer mailer;
 
+    private final Logger logger = LoggerFactory.getLogger(AmazonScheduler.class);
+
     @Scheduled(fixedRate = 3600000)
     public void checkAmazonPromotions() throws Exception {
         List<AmazonOffer> allOffersWithSubscriptions = amazonDao.getAll();
-        System.out.println(allOffersWithSubscriptions.get(1).getAsin());
+        logger.debug(allOffersWithSubscriptions.get(1).getAsin());
         List<AmazonOffer> changedOffers = allOffersWithSubscriptions.stream()
-                .filter(a ->
-                        {
-                            try {
-                                return a.getCurrentPrice().compareTo(amazonService.getOffer(a.getAsin()).getCurrentPrice()) <0;
-                            } catch (Exception e) {
-                                throw new RuntimeException(e);
-                            }
-                        }
-                )
-                .collect(Collectors.toList());
-        System.out.println(changedOffers.size());
-        if (changedOffers.size() > 0) {
-            checkTargetPrice(changedOffers);
+                .filter(this::currentPriceIsLower)
+                .collect(toList());
+        logger.debug("Changed offers size: {}", changedOffers.size());
+        if (!changedOffers.isEmpty()) {
+            checkSubscribedPrices(changedOffers);
         }
     }
 
-    //public Map<Long, Long> findUser
+    private boolean currentPriceIsLower(AmazonOffer offer) {
+        try {
+            BigDecimal currentPrice = amazonService.getOffer(offer.getAsin()).getCurrentPrice();
+            return isLower(offer.getCurrentPrice(), currentPrice);
+        } catch (Exception e) {
+            logger.warn("Problem loading offer: ", e);
+            return false;
+        }
+    }
+
+    private boolean isLower(BigDecimal original, BigDecimal current){
+        return original.compareTo(current) < 0;
+    }
 
     public Map<String, BigDecimal> getActualCurrencies(List<AmazonOffer> changedOffers) throws Exception {
         checkPrices.addCurrency();
@@ -57,29 +71,44 @@ public class AmazonScheduler {
                 .distinct().toList();
 
         for (int i = 0; i < currencySymbols.size(); i++) {
-            System.out.println(currencySymbols.get(i));
-            System.out.println(currencies.get(currencySymbols.get(i)));
-            System.out.println(checkPrices.updateCurrencies(currencies.get(currencySymbols.get(i))));
+            logger.debug(currencySymbols.get(i));
+            logger.debug(currencies.get(currencySymbols.get(i)));
+            logger.debug(""+checkPrices.updateCurrencies(currencies.get(currencySymbols.get(i))));
             currencyExchange.put(currencySymbols.get(i), checkPrices.updateCurrencies(currencies.get(currencySymbols.get(i))));
         }
-        System.out.println(currencyExchange);
+        logger.debug("{}", currencyExchange);
         return currencyExchange;
     }
 
-    public void checkTargetPrice(List<AmazonOffer> changedOffers) throws Exception {
+    //do nowej klasy
+    public void checkSubscribedPrices(List<AmazonOffer> changedOffers) throws Exception {
 
         Map<String, BigDecimal> currencyExchange = getActualCurrencies(changedOffers);
+        Map<String, List<Subscription>> allSubscriptions = null; //subscriptionsRepository.getFor(changedOffersIds); --> map<offerId, List<subscr>)
 
-        List<AmazonOffer> discountedOffers = changedOffers.stream()
-                .filter(a -> a.getCurrentPrice().multiply(currencyExchange.get(a.getCurrencySymbol())).compareTo(a.getTargetPrice()) < 0)
-                .toList();
-
-        if (discountedOffers.size() > 0) {
-            mailer.sendAlert(discountedOffers);
+        for(AmazonOffer changedOffer: changedOffers){
+            List<Subscription> subscriptions = allSubscriptions.get(changedOffer.getAsin());
+            for (Subscription subscription: subscriptions){
+                checkSubscription(currencyExchange, changedOffer, subscription);
+            }
         }
-
-
     }
+
+    private void checkSubscription(Map<String, BigDecimal> currencyExchange, AmazonOffer changedOffer, Subscription subscription) throws URISyntaxException {
+        MonetaryAmount offerPriceInTargetCurrency = toTargetCurrency(currencyExchange, changedOffer, subscription.alertPrice.getCurrency());
+        if (offerPriceInTargetCurrency.isLessThan(subscription.alertPrice)){
+            logger.debug("Sending mail with new price {} for offer {}", offerPriceInTargetCurrency, changedOffer.getAsin());
+            mailer.sendAlert(Collections.singletonList(changedOffer));
+        }
+    }
+
+    private static MonetaryAmount toTargetCurrency(Map<String, BigDecimal> currencyExchange, AmazonOffer offerInOriginalCurrency, CurrencyUnit targetCurrency) {
+        BigDecimal amount = offerInOriginalCurrency.getCurrentPrice().multiply(currencyExchange.get(targetCurrency.getCurrencyCode()));
+        return FastMoney.of(amount, targetCurrency);
+    }
+
+
+    record Subscription(String offerId, MonetaryAmount alertPrice){}
 
 
 }
