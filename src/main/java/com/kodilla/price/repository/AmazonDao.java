@@ -20,4 +20,6 @@ public interface AmazonDao extends CrudRepository<AmazonOffer, Long> {
     Optional<AmazonOffer> findById(long id);
 
     List<AmazonOffer> findAllByCurrencySymbol(String CurrencySymbol);
+
+    Optional<AmazonOffer> findByAsin(String asin);
 }

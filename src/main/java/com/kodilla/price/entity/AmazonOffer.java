@@ -36,7 +36,7 @@ public class AmazonOffer {
 
     @ManyToMany(
             mappedBy = "amazonOfferList",
-            fetch = FetchType.LAZY,
+            fetch = FetchType.EAGER,
             cascade = CascadeType.PERSIST
     )
     private List<User> userEntityList;

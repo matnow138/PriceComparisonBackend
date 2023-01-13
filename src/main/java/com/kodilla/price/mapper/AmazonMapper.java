@@ -21,5 +21,16 @@ public class AmazonMapper {
                 .build();
     }
 
+    public AmazonOfferDto mapToAmazonDto(AmazonOffer amazonOffer){
+        return AmazonOfferDto.builder()
+                .asin(amazonOffer.getAsin())
+                .product_name(amazonOffer.getProductName())
+                .currentPrice(amazonOffer.getCurrentPrice())
+                .locale(amazonOffer.getLocale())
+                .currency_symbol(amazonOffer.getCurrencySymbol())
+                .targetPrice(amazonOffer.getTargetPrice())
+                .build();
+    }
+
 
 }

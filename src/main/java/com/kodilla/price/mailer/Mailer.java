@@ -2,21 +2,27 @@ package com.kodilla.price.mailer;
 
 
 import com.kodilla.price.entity.AmazonOffer;
+import com.kodilla.price.entity.User;
+import com.kodilla.price.scheduler.AmazonScheduler;
 import com.kodilla.price.service.AmazonService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
-
+import org.springframework.mail.javamail.MimeMailMessage;
 import javax.mail.*;
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
+import javax.mail.internet.*;
+
+
+import java.io.UnsupportedEncodingException;
+import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -24,27 +30,42 @@ import java.util.Properties;
 public class Mailer {
 
     private final JavaMailSender javaMailSender;
+    private final Logger logger = LoggerFactory.getLogger(AmazonScheduler.class);;
     private final AmazonService amazonService;
 
 
 
 
-    public void sendAlert(List<AmazonOffer> discountedOffers) throws URISyntaxException {
-        SimpleMailMessage mailMessage = createMailMessage(discountedOffers);
-        javaMailSender.send(mailMessage);
-        System.out.println("Alert sent!");
+    public void sendAlert(List<AmazonOffer> discountedOffers, Map<AmazonOffer, List<User>> offersForUsers) throws URISyntaxException, MessagingException, UnsupportedEncodingException {
+        for(Map.Entry<AmazonOffer, List<User>> entry:offersForUsers.entrySet()){
+            AmazonOffer offer = entry.getKey();
+            List<String> emails = entry.getValue().stream()
+                    .map(User::getMail)
+                    .collect(Collectors.toList());
+            MimeMessage mailMessage = createMailMessage(offer,emails);
+            javaMailSender.send(mailMessage);
+        }
+
+        logger.debug("Alert successfully sent");
+
     }
 
-    private SimpleMailMessage createMailMessage(List<AmazonOffer> discountedOffers) throws URISyntaxException {
-        List<String> discounts = new ArrayList<>();
-        for(AmazonOffer amazon: discountedOffers){
-            discounts.add(amazon.getAsin());
-        }
-        SimpleMailMessage mailMessage = new SimpleMailMessage();
-        mailMessage.setTo("test");
-        mailMessage.setSubject("NEW DISCOUNT!");
-        mailMessage.setText(discounts.toString());
-        return  mailMessage;
+    private MimeMessage createMailMessage(AmazonOffer offer, List<String> emails) throws URISyntaxException, MessagingException, UnsupportedEncodingException {
+        String alertLink = ("\n http://www.amazon.com/dp/"+ offer.getAsin()+"/");
+
+        MimeMessage message = javaMailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message,true);
+        InternetHeaders headers = new InternetHeaders();
+        headers.addHeader("Content-type", "text/html; charset= UTF-8");
+        MimeBodyPart body = new MimeBodyPart();
+        body.setText(alertLink, "UTF-8", "html");
+
+        helper.setFrom("AmazonAlerts@mail.com");
+        helper.setBcc(emails.toString().replaceAll("\\[","").replaceAll("\\]",","));
+        helper.setSubject("Discount of: " + offer.getProductName());
+        helper.setText("Hey! " + offer.getProductName() +" is now cheaper "+ alertLink);
+
+        return message;
     }
 
 

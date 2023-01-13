@@ -4,9 +4,11 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.kodilla.price.domain.AmazonOfferDto;
+import com.kodilla.price.domain.UserDto;
 import com.kodilla.price.entity.AmazonOffer;
 import com.kodilla.price.entity.User;
 import com.kodilla.price.mapper.AmazonMapper;
+import com.kodilla.price.mapper.UserMapper;
 import com.kodilla.price.repository.AmazonDao;
 import com.kodilla.price.repository.UserDao;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +21,8 @@ import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +31,7 @@ public class AmazonService {
     private final AmazonDao amazonDao;
     private final AmazonMapper amazonMapper;
     private final UserDao userDao;
+    private final UserMapper userMapper;
     private final ObjectMapper mapper = new ObjectMapper()
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
       private final ObjectReader arrayReader = mapper.readerForArrayOf(AmazonOfferDto.class);
@@ -85,6 +90,58 @@ public class AmazonService {
                 .addParameter("asins", id)
                 .addParameter("locale", "US")
                 .build();
+    }
+
+    public URI generateUriForAlert(String asin) throws URISyntaxException{
+        return new URIBuilder("www.amazon.com")
+                .setPath("/dp/" + asin + "/")
+                .build();
+    }
+
+    public void deleteOffer(long id){
+        amazonDao.deleteById(id);
+    }
+
+    public AmazonOfferDto updateOffer(AmazonOfferDto amazonOfferDto){
+        AmazonOffer amazonOffer = amazonMapper.mapToAmazon(amazonOfferDto);
+        amazonDao.save(amazonOffer);
+        AmazonOfferDto amazonOfferDto1 = amazonMapper.mapToAmazonDto(amazonOffer);
+        return amazonOfferDto1;
+    }
+
+    public List<AmazonOfferDto> getAllOffers(){
+        List<AmazonOffer> amazonOfferList = amazonDao.getAll();
+        List<AmazonOfferDto> amazonOfferDtoList = new ArrayList<>();
+        for(AmazonOffer amazonOffer:amazonOfferList){
+            amazonOfferDtoList.add(amazonMapper.mapToAmazonDto(amazonOffer));
+        }
+        return amazonOfferDtoList;
+    }
+
+    public void refreshPrices() throws Exception {
+        List<AmazonOffer> amazonOfferList = amazonDao.getAll();
+        List<AmazonOffer> updatedOffer = new ArrayList<>();
+        for(AmazonOffer amazonOffer:amazonOfferList){
+            updatedOffer.add(getOffer(amazonOffer.getAsin()));
+        }
+        for(AmazonOffer amazonOffer:updatedOffer){
+            amazonDao.save(amazonOffer);
+        }
+    }
+
+    public void refreshPrice(String asin) throws Exception{
+        AmazonOffer amazonOffer=getOffer(asin);
+        amazonDao.save(amazonOffer);
+    }
+
+    public List<UserDto> getOffersForUser(long id){
+        AmazonOffer amazonOffer = amazonDao.findById(id).orElse(null);
+        List<User> userList = amazonOffer.getUserEntityList();
+        List<UserDto> userDtoList = new ArrayList<>();
+        for(User user: userList){
+            userDtoList.add(userMapper.mapToUserDto(user));
+        }
+        return userDtoList;
     }
 
 }
