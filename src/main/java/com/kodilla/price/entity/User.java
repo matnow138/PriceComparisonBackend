@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -40,23 +39,14 @@ public class User {
     private boolean isActive = true;
 
 
-    @ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "allegro_offers",
-            joinColumns = {@JoinColumn(name = "allegro_id", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")}
-    )
-    @Builder.Default
-    private List<Allegro> allegroList = new ArrayList<>();
 
     @ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     @JoinTable(
             name = "amazon_offers",
-            joinColumns = {@JoinColumn(name = "amazon_id", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")}
+            joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "amazon_id", referencedColumnName = "id")}
     )
-    @Builder.Default
-    private List<Amazon> amazonList = new ArrayList<>();
+    private List<AmazonOffer> amazonOfferList;
 
 
 }

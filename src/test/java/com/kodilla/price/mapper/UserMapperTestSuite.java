@@ -1,8 +1,7 @@
-package com.kodilla.price.dao;
+package com.kodilla.price.mapper;
 
+import com.kodilla.price.domain.UserDto;
 import com.kodilla.price.entity.User;
-
-import com.kodilla.price.repository.UserDao;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,14 +10,14 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest
-public class UserTestSuite {
-
+@RunWith(SpringRunner.class)
+public class UserMapperTestSuite {
     @Autowired
-    private UserDao userDao;
-  /*   @Test
-   public void saveTest(){
+    private UserMapper userMapper;
+
+  /*  @Test
+    public void mapToUserDtoTest(){
         //Given
         User user =User.builder()
                 .name("John")
@@ -28,16 +27,15 @@ public class UserTestSuite {
                 .password("testPassword")
                 .build();
         //When
-        User savedUser = userDao.save(user);
+        UserDto userDto = userMapper.mapToUserDto(user);
 
         //Then
-        assertEquals(savedUser.getName(),user.getName());
+        assertEquals(userDto.getName(),user.getName());
     }
-
     @Test
-    public void findUserByIdTest(){
+    public void mapToUserTest(){
         //Given
-        User user =User.builder()
+        UserDto userDto =UserDto.builder()
                 .name("John")
                 .lastName("Smith")
                 .mail("test@test.com")
@@ -45,11 +43,9 @@ public class UserTestSuite {
                 .password("testPassword")
                 .build();
         //When
-        User savedUser = userDao.save(user);
-        long userID = savedUser.getId();
-        User foundUser = userDao.findById(userID).orElse(null);
-        //Then
-        assertEquals(savedUser.getName(), foundUser.getName());
-    }*/
+        User user = userMapper.mapToUser(userDto);
 
+        //Then
+        assertEquals(user.getName(),userDto.getName());
+    }*/
 }

@@ -1,8 +1,8 @@
 spring:
   datasource:
-    username: kodilla_user
-    url: jdbc:mysql://localhost:3306/kodilla_project?serverTimezone=Europe/Warsaw&allowPublicKeyRetrieval=true&useSSL=False
-    password: kodilla_password
+    username: user
+    url: jdbc:mysql://localhost:3306/prices?serverTimezone=Europe/Warsaw&allowPublicKeyRetrieval=true&useSSL=False
+    password: password
   jpa:
     properties:
       hibernate:
@@ -12,8 +12,19 @@ spring:
     hibernate:
       ddl-auto: update
       naming:
-        physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
-        implicit-strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+        implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
+  mail:
+    host: smtp.mailtrap.io
+    port: 2525
+    username: 29a74df91e7b05
+    password: 08516cfc35c319
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 application:
   security:
     jwt:
