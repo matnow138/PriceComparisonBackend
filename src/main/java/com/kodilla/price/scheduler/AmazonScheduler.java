@@ -4,6 +4,7 @@ import com.kodilla.price.entity.AmazonOffer;
 import com.kodilla.price.entity.User;
 import com.kodilla.price.mailer.Mailer;
 import com.kodilla.price.repository.AmazonDao;
+import com.kodilla.price.repository.CurrencyDao;
 import com.kodilla.price.service.AmazonService;
 import lombok.RequiredArgsConstructor;
 import org.javamoney.moneta.FastMoney;
@@ -31,6 +32,7 @@ public class AmazonScheduler {
     private final CheckPrices checkPrices;
     private final Mailer mailer;
     private final Logger logger  = LoggerFactory.getLogger(AmazonScheduler.class);
+    private final CurrencyDao currencyDao;
 
     @Scheduled(fixedRate = 3600000)
     public void checkAmazonPromotions() throws Exception {
@@ -68,7 +70,7 @@ public class AmazonScheduler {
     }
 
     public Map<String, BigDecimal> getActualCurrencies(List<AmazonOffer> changedOffers) throws Exception {
-        checkPrices.addCurrency();
+        //checkPrices.addCurrency();
         Map<String, String> currencies = checkPrices.getCurrencyConversion();
         Map<String, BigDecimal> currencyExchange = new HashMap<>();
         List<String> currencySymbols = changedOffers.stream()
@@ -78,7 +80,8 @@ public class AmazonScheduler {
 
         for (int i = 0; i < currencySymbols.size(); i++) {
             logger.debug("Currency Exchange for offer {}", changedOffers.get(i).getAsin());
-            currencyExchange.put(currencySymbols.get(i), checkPrices.updateCurrencies(currencies.get(currencySymbols.get(i))));
+            //currencyExchange.put(currencySymbols.get(i), checkPrices.updateCurrencies(currencies.get(currencySymbols.get(i))));
+            currencyExchange.put(currencySymbols.get(i), checkPrices.updateCurrencies(currencyDao.findCurrencyByCurrencySymbol(currencySymbols.get(i)).getCurrency()));
         }
         return currencyExchange;
     }

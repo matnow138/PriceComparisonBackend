@@ -5,6 +5,7 @@ import com.kodilla.price.entity.AmazonOffer;
 import com.kodilla.price.entity.User;
 import com.kodilla.price.scheduler.AmazonScheduler;
 import com.kodilla.price.service.AmazonService;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
@@ -27,11 +28,11 @@ import java.util.stream.Collectors;
 @Slf4j
 @RequiredArgsConstructor
 @Service
+@Data
 public class Mailer {
 
     private final JavaMailSender javaMailSender;
     private final Logger logger = LoggerFactory.getLogger(AmazonScheduler.class);;
-    private final AmazonService amazonService;
 
 
 

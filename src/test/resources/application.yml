@@ -4,6 +4,17 @@ spring:
     username: sa
     url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1
     password: sa
+  mail:
+     host: smtp.mailtrap.io
+     port: 2525
+     username: 29a74df91e7b05
+     password: 08516cfc35c319
+     properties:
+       mail:
+         smtp:
+           auth: true
+           starttls:
+             enable: true
 application:
   security:
     jwt:

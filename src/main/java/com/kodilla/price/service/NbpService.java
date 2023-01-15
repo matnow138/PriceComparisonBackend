@@ -7,10 +7,13 @@ import com.kodilla.price.domain.NbpDto;
 import com.kodilla.price.entity.Nbp;
 import com.kodilla.price.mapper.NbpMapper;
 import com.kodilla.price.repository.NbpDao;
+import com.kodilla.price.scheduler.CheckPrices;
 import lombok.RequiredArgsConstructor;
 import org.apache.http.client.utils.URIBuilder;
+import org.hibernate.annotations.Check;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.http.HttpClient;
@@ -23,17 +26,11 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class NbpService {
 
-    private final NbpDao nbpDao;
-    private final NbpMapper nbpMapper;
-    private final ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-
-
     public NbpDto getCurrency(String currency) throws Exception{
         HttpRequest request = createRequestForProduct(currency);
         HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
 
         String body = response.body();
-        //System.out.println(body);
         NbpDto nbpDto = new ObjectMapper().readValue(body, NbpDto.class);
 
         return nbpDto;
@@ -51,6 +48,13 @@ public class NbpService {
         return new URIBuilder("http://api.nbp.pl/api/exchangerates/rates/c/"+ currency + "/?format=json")
                 .build();
     }
+
+    public BigDecimal getCurrencyExchangeRate(String currency)throws Exception{
+        NbpDto nbpDto = getCurrency(currency);
+        BigDecimal exchangeRate = nbpDto.getRates().get(0).getAsk();
+        return exchangeRate;
+    }
+
 
 
 

@@ -8,6 +8,7 @@ import com.kodilla.price.repository.AmazonDao;
 import com.kodilla.price.repository.UserDao;
 import com.kodilla.price.service.UserService;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import org.apache.coyote.Response;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -65,7 +66,7 @@ public class UserController {
     }
 
     @GetMapping(value="/getOffers/{id}")
-    public ResponseEntity<List<AmazonOfferDto>> getOffersForUser(@RequestParam long id){
+    public ResponseEntity<List<AmazonOfferDto>> getOffersForUser(@PathVariable long id){
         List<AmazonOfferDto> amazonOfferDtoList = userService.findOffersForUser(id);
         return ResponseEntity.ok(amazonOfferDtoList);
     }
