@@ -22,7 +22,7 @@ public class NbpController {
     }
 
    @PostMapping
-    public ResponseEntity<Void> addCurrency(String currency, String currencySymbol){
+    public ResponseEntity<Void> addCurrency(@RequestParam String currency, @RequestParam String currencySymbol){
         currencyService.addCurrency(currency,currencySymbol);
         return ResponseEntity.ok().build();
     }

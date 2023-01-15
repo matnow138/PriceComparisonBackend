@@ -2,9 +2,10 @@ package com.kodilla.price.repository;
 
 import com.kodilla.price.entity.Nbp;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
-
+@Repository
 public interface NbpDao extends CrudRepository<Nbp, Long> {
 
     @Override

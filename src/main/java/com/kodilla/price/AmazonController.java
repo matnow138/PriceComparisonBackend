@@ -18,7 +18,7 @@ public class AmazonController {
 
     private final AmazonService amazonService;
 
-    @GetMapping
+    @PostMapping
     @ResponseBody
     public ResponseEntity<Void> addProduct(@RequestParam String id, long userID, BigDecimal targetPrice) throws Exception{
         amazonService.getProduct(id, userID, targetPrice);

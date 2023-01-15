@@ -7,6 +7,7 @@ import com.kodilla.price.entity.User;
 import com.kodilla.price.mapper.AmazonMapper;
 import com.kodilla.price.mapper.UserMapper;
 import com.kodilla.price.repository.UserDao;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Data
 public class UserService {
 
     private final UserDao userDao;
