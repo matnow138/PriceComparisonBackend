@@ -17,9 +17,8 @@ import java.util.List;
 public class AmazonController {
 
     private final AmazonService amazonService;
-    private final AmazonDao amazonDao;
 
-    @GetMapping
+    @PostMapping
     @ResponseBody
     public ResponseEntity<Void> addProduct(@RequestParam String id, long userID, BigDecimal targetPrice) throws Exception{
         amazonService.getProduct(id, userID, targetPrice);
@@ -27,7 +26,7 @@ public class AmazonController {
     }
 
     @PatchMapping(value = "/deleteOffer/{id}")
-    public ResponseEntity<Void> deleteOffer(long id){
+    public ResponseEntity<Void> deleteOffer( @PathVariable long id){
         amazonService.deleteOffer(id);
         return ResponseEntity.ok().build();
     }
@@ -58,5 +57,10 @@ public class AmazonController {
     public ResponseEntity<List<UserDto>> getUsersForOffer(long id){
         List<UserDto> userDtoList = amazonService.getOffersForUser(id);
         return ResponseEntity.ok(userDtoList);
+    }
+
+    @GetMapping(value="/getOffer/{id}")
+    public ResponseEntity<AmazonOfferDto> getOffer(@PathVariable long id){
+        return ResponseEntity.ok(amazonService.getOffer(id));
     }
 }

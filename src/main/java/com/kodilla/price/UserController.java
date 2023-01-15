@@ -8,9 +8,12 @@ import com.kodilla.price.repository.AmazonDao;
 import com.kodilla.price.repository.UserDao;
 import com.kodilla.price.service.UserService;
 import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.apache.coyote.Response;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,7 +24,7 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
-    private final AmazonDao amazonDao;
+
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> createUser(@RequestBody UserDto userDto){
@@ -65,7 +68,7 @@ public class UserController {
     }
 
     @GetMapping(value="/getOffers/{id}")
-    public ResponseEntity<List<AmazonOfferDto>> getOffersForUser(@RequestParam long id){
+    public ResponseEntity<List<AmazonOfferDto>> getOffersForUser(@PathVariable long id){
         List<AmazonOfferDto> amazonOfferDtoList = userService.findOffersForUser(id);
         return ResponseEntity.ok(amazonOfferDtoList);
     }

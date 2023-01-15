@@ -144,4 +144,10 @@ public class AmazonService {
         return userDtoList;
     }
 
+    public AmazonOfferDto getOffer(long id){
+        AmazonOffer amazonOffer = amazonDao.findById(id).orElse(null);
+        AmazonOfferDto amazonOfferDto = amazonMapper.mapToAmazonDto(amazonOffer);
+        return amazonOfferDto;
+    }
+
 }
