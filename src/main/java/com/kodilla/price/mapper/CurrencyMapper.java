@@ -7,14 +7,14 @@ import org.springframework.stereotype.Service;
 @Service
 public class CurrencyMapper {
 
-    public Currency mapToCurrency(CurrencyDto currencyDto){
+    public Currency mapToCurrency(CurrencyDto currencyDto) {
         return Currency.builder()
                 .currency(currencyDto.getCurrency())
                 .currencySymbol(currencyDto.getCurrencySymbol())
                 .build();
     }
 
-    public CurrencyDto mapToCurrencyDto(Currency currency){
+    public CurrencyDto mapToCurrencyDto(Currency currency) {
         return CurrencyDto.builder()
                 .currency(currency.getCurrency())
                 .currencySymbol(currency.getCurrencySymbol())

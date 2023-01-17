@@ -22,4 +22,6 @@ public interface UserDao extends CrudRepository<User, Long> {
             value = "SELECT * FROM user",
             nativeQuery = true)
     List<User> getAll();
+
+    Optional<User> findByLogin(String login);
 }

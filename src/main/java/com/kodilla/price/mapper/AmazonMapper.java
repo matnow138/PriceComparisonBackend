@@ -9,8 +9,9 @@ import java.time.LocalDate;
 @Service
 public class AmazonMapper {
 
-    public AmazonOffer mapToAmazon(AmazonOfferDto amazonOfferDto){
+    public AmazonOffer mapToAmazon(AmazonOfferDto amazonOfferDto) {
         return AmazonOffer.builder()
+                .id(amazonOfferDto.getId())
                 .asin(amazonOfferDto.getAsin())
                 .productName(amazonOfferDto.getProduct_name())
                 .addedDate(LocalDate.now())
@@ -21,8 +22,9 @@ public class AmazonMapper {
                 .build();
     }
 
-    public AmazonOfferDto mapToAmazonDto(AmazonOffer amazonOffer){
+    public AmazonOfferDto mapToAmazonDto(AmazonOffer amazonOffer) {
         return AmazonOfferDto.builder()
+                .id(amazonOffer.getId())
                 .asin(amazonOffer.getAsin())
                 .product_name(amazonOffer.getProductName())
                 .currentPrice(amazonOffer.getCurrentPrice())

@@ -25,63 +25,62 @@ public class UserService {
 
     private final AmazonMapper amazonMapper;
 
-    public ResponseEntity<Void> createUser(UserDto userDto){
+    public ResponseEntity<Void> createUser(UserDto userDto) {
         User user = userMapper.mapToUser(userDto);
         userDao.save(user);
         return ResponseEntity.ok().build();
     }
 
-    public UserDto findUserById(long id){
+    public UserDto findUserById(long id) {
         User user = userDao.findById(id).orElse(null);
-        try{
+        try {
             return userMapper.mapToUserDto(user);
-        }catch (Exception e){
+        } catch (Exception e) {
             return null;
         }
 
     }
 
-    public UserDto updateUser(UserDto userDto){
+    public UserDto updateUser(UserDto userDto) {
         User user = userMapper.mapToUser(userDto);
         userDao.save(user);
         return userMapper.mapToUserDto(user);
     }
 
-    public void deleteUser(long id){
+    public void deleteUser(long id) {
         userDao.deleteById(id);
     }
 
-    public void blockUser(long id){
+    public void blockUser(long id) {
         User user = userDao.findById(id).orElse(null);
         user.setActive(false);
         userDao.save(user);
     }
 
-    public void activateUser(long id){
+    public void activateUser(long id) {
         User user = userDao.findById(id).orElse(null);
         user.setActive(true);
         userDao.save(user);
     }
 
-    public List<UserDto> getAll(){
+    public List<UserDto> getAll() {
         List<User> userList = userDao.getAll();
         List<UserDto> userDtoList = new ArrayList<>();
-        for(User user:userList){
+        for (User user : userList) {
             userDtoList.add(userMapper.mapToUserDto(user));
         }
         return userDtoList;
     }
 
-    public List<AmazonOfferDto> findOffersForUser(long id){
+    public List<AmazonOfferDto> findOffersForUser(long id) {
         User user = userDao.findById(id).orElse(null);
         List<AmazonOffer> amazonOfferList = user.getAmazonOfferList();
         List<AmazonOfferDto> amazonOfferDtoList = new ArrayList<>();
-        for(AmazonOffer amazonOffer:amazonOfferList){
+        for (AmazonOffer amazonOffer : amazonOfferList) {
             amazonOfferDtoList.add(amazonMapper.mapToAmazonDto(amazonOffer));
         }
         return amazonOfferDtoList;
     }
-
 
 
 }

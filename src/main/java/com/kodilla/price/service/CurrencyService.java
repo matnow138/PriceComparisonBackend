@@ -14,7 +14,7 @@ public class CurrencyService {
     private final CurrencyDao currencyDao;
     private final CurrencyMapper currencyMapper;
 
-    public void addCurrency(String currencySymbol, String currency){
+    public void addCurrency(String currencySymbol, String currency) {
         CurrencyDto currencyDto = CurrencyDto.builder()
                 .currency(currency)
                 .currencySymbol(currencySymbol)
@@ -24,12 +24,12 @@ public class CurrencyService {
 
     }
 
-    public String getCurrencyName(String currencySymbol){
+    public String getCurrencyName(String currencySymbol) {
         Currency currency = currencyDao.findCurrencyByCurrencySymbol(currencySymbol);
         return currency.getCurrency();
     }
 
-    public String getCurrencySymbol(String currencyName){
+    public String getCurrencySymbol(String currencyName) {
         Currency currency = currencyDao.findCurrencyByCurrency(currencyName);
         return currency.getCurrencySymbol();
     }

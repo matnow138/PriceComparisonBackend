@@ -2,12 +2,14 @@ package com.kodilla.price.domain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.gson.annotations.SerializedName;
+import com.kodilla.price.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -27,7 +29,7 @@ public class AmazonOfferDto {
     @SerializedName("currency_symbol")
     private String currency_symbol;
     private BigDecimal targetPrice;
-
+    private List<User> userEntityList;
 
 
 }

@@ -1,12 +1,9 @@
 package com.kodilla.price.controller;
 
-import com.kodilla.price.domain.NbpDto;
 import com.kodilla.price.entity.Currency;
 import com.kodilla.price.entity.Nbp;
 import com.kodilla.price.repository.CurrencyDao;
 import com.kodilla.price.repository.NbpDao;
-import org.hamcrest.Matchers;
-import org.junit.After;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -35,12 +32,12 @@ public class NbpControllerTestSuite {
     private CurrencyDao currencyDao;
 
     @AfterEach
-    public void cleanUp(){
+    public void cleanUp() {
         currencyDao.deleteAll();
     }
 
     @Test
-    public void getExchangeRateTest() throws Exception{
+    public void getExchangeRateTest() throws Exception {
         //Given
         Nbp nbp = Nbp.builder()
                 .currency("USD")
@@ -60,7 +57,7 @@ public class NbpControllerTestSuite {
     }
 
     @Test
-    public void addCurrencyTest() throws Exception{
+    public void addCurrencyTest() throws Exception {
         //Given
 
         //When & Then
@@ -76,12 +73,12 @@ public class NbpControllerTestSuite {
     }
 
     @Test
-    public void getCurrencyName() throws Exception{
+    public void getCurrencyName() throws Exception {
         //Given
         Currency currency = Currency.builder()
-                        .currencySymbol("$")
-                        .currency("USD")
-                        .build();
+                .currencySymbol("$")
+                .currency("USD")
+                .build();
         currencyDao.save(currency);
 
         //When & Then
@@ -92,8 +89,9 @@ public class NbpControllerTestSuite {
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().is(200));
     }
+
     @Test
-    public void getCurrencySymbol() throws Exception{
+    public void getCurrencySymbol() throws Exception {
         //Given
         Currency currency = Currency.builder()
                 .currencySymbol("$")
