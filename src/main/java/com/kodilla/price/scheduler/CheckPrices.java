@@ -1,7 +1,6 @@
 package com.kodilla.price.scheduler;
 
 
-import com.kodilla.price.domain.CurrencyDto;
 import com.kodilla.price.domain.NbpDto;
 import com.kodilla.price.entity.AmazonOffer;
 import com.kodilla.price.entity.Currency;
@@ -32,31 +31,26 @@ public class CheckPrices {
     private final CurrencyMapper currencyMapper;
 
 
-    private final List<String> currencies1 = List.of("USD","EUR","PLN");
+    private final List<String> currencies1 = List.of("USD", "EUR", "PLN");
 
-    private final Map<String,String> currencyConversion = new HashMap<>();
+    private final Map<String, String> currencyConversion = new HashMap<>();
 
-    public BigDecimal updateCurrencies(String currency) throws Exception{
+    public BigDecimal updateCurrencies(String currency) throws Exception {
         NbpDto nbpDto = nbpService.getCurrency(currency);
         return nbpDto.getRates().get(0).getAsk();
 
     }
 
 
-    public void checkTargetPrice()throws Exception{
-        Currency currency=currencyDao.findCurrencyByCurrency("$");
+    public void checkTargetPrice() throws Exception {
+        Currency currency = currencyDao.findCurrencyByCurrency("$");
 
-       // BigDecimal exchangeRate = updateCurrencies(currencies1.get(0));
         BigDecimal exchangeRate = updateCurrencies(currency.getCurrency());
-
-        //List<AmazonOffer> filteredOffers = amazonDao.findAllByCurrencySymbol(currencyConversion.get(currencies1.get(0)));
         List<AmazonOffer> filteredOffers = amazonDao.findAllByCurrencySymbol(currencyConversion.get(currency.getCurrencySymbol()));
-        //System.out.println(exchangeRate);
-        //System.out.println(filteredOffers.get(0).getAsin());
         List<AmazonOffer> discountedOffers = filteredOffers.stream()
-                .filter(p -> ((p.getCurrentPrice().multiply(exchangeRate)).compareTo(p.getTargetPrice())<0))
+                .filter(p -> ((p.getCurrentPrice().multiply(exchangeRate)).compareTo(p.getTargetPrice()) < 0))
                 .collect(Collectors.toList());
-        if(discountedOffers.size()>0){
+        if (discountedOffers.size() > 0) {
             System.out.println("mail");
         }
         System.out.println(discountedOffers);

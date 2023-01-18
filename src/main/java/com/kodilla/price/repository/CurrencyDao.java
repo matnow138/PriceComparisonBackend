@@ -5,10 +5,15 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface CurrencyDao extends CrudRepository<Currency,String> {
+public interface CurrencyDao extends CrudRepository<Currency, Long> {
 
-    public Currency findCurrencyByCurrency(String currency);
+    Currency findCurrencyByCurrency(String currency);
 
-    public Currency findCurrencyByCurrencySymbol(String currencySymbol);
+    Currency findCurrencyByCurrencySymbol(String currencySymbol);
+
+
+
+    void deleteById(long id);
+    void deleteByCurrency(String currency);
 
 }

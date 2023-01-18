@@ -7,6 +7,7 @@ import com.kodilla.price.domain.AmazonOfferDto;
 import com.kodilla.price.domain.UserDto;
 import com.kodilla.price.entity.AmazonOffer;
 import com.kodilla.price.entity.User;
+import com.kodilla.price.exception.OfferNotFoundException;
 import com.kodilla.price.mapper.AmazonMapper;
 import com.kodilla.price.mapper.UserMapper;
 import com.kodilla.price.repository.AmazonDao;
@@ -34,46 +35,7 @@ public class AmazonService {
     private final UserMapper userMapper;
     private final ObjectMapper mapper = new ObjectMapper()
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-      private final ObjectReader arrayReader = mapper.readerForArrayOf(AmazonOfferDto.class);
-
-
-    public void getProduct(String id, long userID, BigDecimal targetPrice) throws Exception {
-
-        HttpRequest request = createRequestForProduct(id);
-        HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
-
-        String body = response.body();
-        System.out.println(body);
-        AmazonOfferDto[] productsArrayNode = arrayReader.readValue(body, AmazonOfferDto[].class);
-
-        AmazonOffer amazonOffer = amazonMapper.mapToAmazon(productsArrayNode[0]);
-        try {
-
-            User user = userDao.findById(userID).orElse(null);
-            user.getAmazonOfferList().add(amazonOffer);
-
-        }catch (Exception e){
-            System.out.println("User not found");
-        }
-        amazonOffer.setTargetPrice(targetPrice);
-        amazonDao.save(amazonOffer);
-
-    }
-
-    public AmazonOffer getOffer(String asin) throws Exception {
-
-            HttpRequest request = createRequestForProduct(asin);
-            HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
-
-            String body = response.body();
-            //System.out.println(body);
-            AmazonOfferDto[] productsArrayNode = arrayReader.readValue(body, AmazonOfferDto[].class);
-            return amazonMapper.mapToAmazon(productsArrayNode[0]);
-
-
-
-
-    }
+    private final ObjectReader arrayReader = mapper.readerForArrayOf(AmazonOfferDto.class);
 
     public static HttpRequest createRequestForProduct(String id) throws URISyntaxException {
         return HttpRequest.newBuilder()
@@ -92,27 +54,70 @@ public class AmazonService {
                 .build();
     }
 
-    public URI generateUriForAlert(String asin) throws URISyntaxException{
+    public void getProduct(String id, String userID, BigDecimal targetPrice) throws Exception {
+
+        HttpRequest request = createRequestForProduct(id);
+        HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+
+        String body = response.body();
+        AmazonOfferDto[] productsArrayNode = arrayReader.readValue(body, AmazonOfferDto[].class);
+
+        AmazonOffer amazonOffer = amazonMapper.mapToAmazon(productsArrayNode[0]);
+        try {
+
+            User user = userDao.findById(Long.valueOf(userID)).orElse(null);
+            user.getAmazonOfferList().add(amazonOffer);
+
+        } catch (Exception e) {
+            System.out.println("User not found");
+        }
+        amazonOffer.setTargetPrice(targetPrice);
+        amazonDao.save(amazonOffer);
+
+    }
+
+    public AmazonOffer getOffer(String asin) throws Exception {
+
+        HttpRequest request = createRequestForProduct(asin);
+        HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+
+        String body = response.body();
+        AmazonOfferDto[] productsArrayNode = arrayReader.readValue(body, AmazonOfferDto[].class);
+        return amazonMapper.mapToAmazon(productsArrayNode[0]);
+
+
+    }
+
+    public URI generateUriForAlert(String asin) throws URISyntaxException {
         return new URIBuilder("www.amazon.com")
                 .setPath("/dp/" + asin + "/")
                 .build();
     }
 
-    public void deleteOffer(long id){
+    public void deleteOffer(long id) {
         amazonDao.deleteById(id);
     }
 
-    public AmazonOfferDto updateOffer(AmazonOfferDto amazonOfferDto){
-        AmazonOffer amazonOffer = amazonMapper.mapToAmazon(amazonOfferDto);
-        amazonDao.save(amazonOffer);
-        AmazonOfferDto amazonOfferDto1 = amazonMapper.mapToAmazonDto(amazonOffer);
-        return amazonOfferDto1;
+    public AmazonOfferDto updateOffer(AmazonOfferDto amazonOfferDto) throws OfferNotFoundException {
+        if(amazonOfferDto.getId()!=null){
+            AmazonOffer amazonOffer=amazonDao.findById(amazonOfferDto.getId()).orElseThrow(OfferNotFoundException::new);
+            amazonOffer.setAsin(amazonOfferDto.getAsin());
+            amazonOffer.setProductName(amazonOfferDto.getProduct_name());
+            amazonOffer.setCurrentPrice(amazonOfferDto.getCurrentPrice());
+            amazonOffer.setLocale(amazonOfferDto.getLocale());
+            amazonOffer.setCurrencySymbol(amazonOfferDto.getCurrency_symbol());
+            amazonOffer.setTargetPrice(amazonOfferDto.getTargetPrice());
+            amazonDao.save(amazonOffer);
+            return amazonMapper.mapToAmazonDto(amazonOffer);
+        }else{
+            return amazonOfferDto;
+        }
     }
 
-    public List<AmazonOfferDto> getAllOffers(){
+    public List<AmazonOfferDto> getAllOffers() {
         List<AmazonOffer> amazonOfferList = amazonDao.getAll();
         List<AmazonOfferDto> amazonOfferDtoList = new ArrayList<>();
-        for(AmazonOffer amazonOffer:amazonOfferList){
+        for (AmazonOffer amazonOffer : amazonOfferList) {
             amazonOfferDtoList.add(amazonMapper.mapToAmazonDto(amazonOffer));
         }
         return amazonOfferDtoList;
@@ -120,34 +125,43 @@ public class AmazonService {
 
     public void refreshPrices() throws Exception {
         List<AmazonOffer> amazonOfferList = amazonDao.getAll();
-        List<AmazonOffer> updatedOffer = new ArrayList<>();
-        for(AmazonOffer amazonOffer:amazonOfferList){
-            updatedOffer.add(getOffer(amazonOffer.getAsin()));
-        }
-        for(AmazonOffer amazonOffer:updatedOffer){
-            amazonDao.save(amazonOffer);
+
+        for (AmazonOffer amazonOffer : amazonOfferList) {
+            CreateRequestForProductUpdate(amazonOffer);
         }
     }
 
-    public void refreshPrice(String asin) throws Exception{
-        AmazonOffer amazonOffer=getOffer(asin);
+    private void CreateRequestForProductUpdate(AmazonOffer amazonOffer) throws URISyntaxException, java.io.IOException, InterruptedException {
+        HttpRequest request = createRequestForProduct(amazonOffer.getAsin());
+        HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+
+        String body = response.body();
+        System.out.println(body);
+        AmazonOfferDto[] productsArrayNode = arrayReader.readValue(body, AmazonOfferDto[].class);
+        amazonOffer.setCurrentPrice(productsArrayNode[0].getCurrentPrice());
         amazonDao.save(amazonOffer);
     }
 
-    public List<UserDto> getOffersForUser(long id){
-        AmazonOffer amazonOffer = amazonDao.findById(id).orElse(null);
+    public void refreshPrice(String id) throws OfferNotFoundException, Exception {
+        AmazonOffer foundAmazon = amazonDao.findById(Long.valueOf(id)).orElseThrow(OfferNotFoundException::new);
+        CreateRequestForProductUpdate(foundAmazon);
+    }
+
+    public List<UserDto> getOffersForUser(long id) throws OfferNotFoundException {
+        AmazonOffer amazonOffer = amazonDao.findById(id).orElseThrow(OfferNotFoundException::new);
         List<User> userList = amazonOffer.getUserEntityList();
         List<UserDto> userDtoList = new ArrayList<>();
-        for(User user: userList){
+        for (User user : userList) {
             userDtoList.add(userMapper.mapToUserDto(user));
         }
         return userDtoList;
     }
 
-    public AmazonOfferDto getOffer(long id){
-        AmazonOffer amazonOffer = amazonDao.findById(id).orElse(null);
+    public AmazonOfferDto getOffer(long id) throws OfferNotFoundException {
+        AmazonOffer amazonOffer = amazonDao.findById(id).orElseThrow(OfferNotFoundException::new);
         AmazonOfferDto amazonOfferDto = amazonMapper.mapToAmazonDto(amazonOffer);
         return amazonOfferDto;
     }
+
 
 }

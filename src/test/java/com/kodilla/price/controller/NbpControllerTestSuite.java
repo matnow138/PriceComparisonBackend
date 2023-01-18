@@ -1,12 +1,9 @@
 package com.kodilla.price.controller;
 
-import com.kodilla.price.domain.NbpDto;
 import com.kodilla.price.entity.Currency;
 import com.kodilla.price.entity.Nbp;
 import com.kodilla.price.repository.CurrencyDao;
 import com.kodilla.price.repository.NbpDao;
-import org.hamcrest.Matchers;
-import org.junit.After;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -34,13 +31,8 @@ public class NbpControllerTestSuite {
     @Autowired
     private CurrencyDao currencyDao;
 
-    @AfterEach
-    public void cleanUp(){
-        currencyDao.deleteAll();
-    }
-
     @Test
-    public void getExchangeRateTest() throws Exception{
+    public void getExchangeRateTest() throws Exception {
         //Given
         Nbp nbp = Nbp.builder()
                 .currency("USD")
@@ -57,10 +49,11 @@ public class NbpControllerTestSuite {
                                 .get("/v1/nbp/getExchangeRate/{currency}", savedNbp.getCurrency())
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().is(200));
+        nbpDao.deleteById(savedNbp.getId());
     }
 
     @Test
-    public void addCurrencyTest() throws Exception{
+    public void addCurrencyTest() throws Exception {
         //Given
 
         //When & Then
@@ -69,20 +62,22 @@ public class NbpControllerTestSuite {
                         MockMvcRequestBuilders
                                 .post("/v1/nbp/")
                                 .characterEncoding("UTF-8")
-                                .param("currency", "USD")
-                                .param("currencySymbol", "$")
+                                .param("currency", "EURAD")
+                                .param("currencySymbol", "€")
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().is(200));
+        //currencyDao.deleteByCurrency("EUR");
+
     }
 
     @Test
-    public void getCurrencyName() throws Exception{
+    public void getCurrencyName() throws Exception {
         //Given
         Currency currency = Currency.builder()
-                        .currencySymbol("$")
-                        .currency("USD")
-                        .build();
-        currencyDao.save(currency);
+                .currencySymbol("€")
+                .currency("EURCN")
+                .build();
+        Currency savedCurrency = currencyDao.save(currency);
 
         //When & Then
         mockMvc
@@ -91,15 +86,19 @@ public class NbpControllerTestSuite {
                                 .get("/v1/nbp/getCurrencyName/{currencySymbol}", currency.getCurrencySymbol())
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().is(200));
+
+        currencyDao.deleteById(savedCurrency.getId());
+
     }
+
     @Test
-    public void getCurrencySymbol() throws Exception{
+    public void getCurrencySymbol() throws Exception {
         //Given
         Currency currency = Currency.builder()
-                .currencySymbol("$")
-                .currency("USD")
+                .currencySymbol("€")
+                .currency("EURCS")
                 .build();
-        currencyDao.save(currency);
+        Currency savedCurrency = currencyDao.save(currency);
 
         //When & Then
         mockMvc
@@ -108,6 +107,7 @@ public class NbpControllerTestSuite {
                                 .get("/v1/nbp/getCurrencySymbol/{currencyName}", currency.getCurrency())
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().is(200));
+        currencyDao.deleteById(savedCurrency.getId());
     }
 
 }

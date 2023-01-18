@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class NbpMapper {
 
-    public Nbp mapToNbp(NbpDto nbpDto){
+    public Nbp mapToNbp(NbpDto nbpDto) {
         return Nbp.builder()
                 .currency(nbpDto.getCurrency())
                 .exchangeRate(nbpDto.getRates().get(0).getAsk())

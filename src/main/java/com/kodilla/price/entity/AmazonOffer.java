@@ -6,7 +6,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 
@@ -17,22 +17,22 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AmazonOffer {
-    @Column(name ="AddedDate")
+    @Column(name = "AddedDate")
     @Builder.Default
     private LocalDate addedDate = LocalDate.now();
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     @NotNull
     private String asin;
-    @Column(name ="ProductName")
+    @Column(name = "ProductName")
     private String productName;
-    @Column(name ="CurentPrice")
+    @Column(name = "CurentPrice")
     private BigDecimal currentPrice;
     private String locale;
-    @Column(name ="CurrencySymbol")
+    @Column(name = "CurrencySymbol")
     private String currencySymbol;
-    @Column(name ="TargetPrice")
+    @Column(name = "TargetPrice")
     private BigDecimal targetPrice;
 
     @ManyToMany(
@@ -40,6 +40,7 @@ public class AmazonOffer {
             fetch = FetchType.EAGER,
             cascade = CascadeType.PERSIST
     )
-    private List<User> userEntityList;
+    @Builder.Default
+    private List<User> userEntityList = new LinkedList<>();
 }
 

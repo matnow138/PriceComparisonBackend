@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 @Data
@@ -40,14 +40,14 @@ public class User {
     private boolean isActive = true;
 
 
-
     @ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     @JoinTable(
             name = "amazon_offers",
             joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "amazon_id", referencedColumnName = "id")}
     )
-    private List<AmazonOffer> amazonOfferList;
+    @Builder.Default
+    private List<AmazonOffer> amazonOfferList = new LinkedList<>();
 
 
 }

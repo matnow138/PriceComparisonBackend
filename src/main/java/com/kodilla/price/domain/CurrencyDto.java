@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 public class CurrencyDto {
+    private Long id;
     private String currencySymbol;
     private String currency;
 }

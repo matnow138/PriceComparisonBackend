@@ -31,13 +31,18 @@ public class AmazonScheduler {
 
     private final CheckPrices checkPrices;
     private final Mailer mailer;
-    private final Logger logger  = LoggerFactory.getLogger(AmazonScheduler.class);
+    private final Logger logger = LoggerFactory.getLogger(AmazonScheduler.class);
     private final CurrencyDao currencyDao;
+
+    private static MonetaryAmount toTargetCurrency(Map<String, BigDecimal> currencyExchange, AmazonOffer offerInOriginalCurrency, CurrencyUnit targetCurrency) {
+        BigDecimal amount = offerInOriginalCurrency.getCurrentPrice().multiply(currencyExchange.get(targetCurrency.getCurrencyCode()));
+        return FastMoney.of(amount, targetCurrency);
+    }
 
     @Scheduled(fixedRate = 3600000)
     public void checkAmazonPromotions() throws Exception {
         List<AmazonOffer> allOffersWithSubscriptions = amazonDao.getAll();
-        logger.debug(allOffersWithSubscriptions.get(1).getAsin());
+        logger.debug(allOffersWithSubscriptions.toString());
         List<AmazonOffer> changedOffers = allOffersWithSubscriptions.stream()
                 .filter(this::currentPriceIsLower)
                 .collect(Collectors.toList());
@@ -57,20 +62,19 @@ public class AmazonScheduler {
         }
     }
 
-    private boolean isLower(BigDecimal original, BigDecimal current){
+    private boolean isLower(BigDecimal original, BigDecimal current) {
         return original.compareTo(current) < 0;
     }
 
-    public Map<AmazonOffer, List<User>> findUserAndOffer(List<AmazonOffer> discountedOffers){
+    public Map<AmazonOffer, List<User>> findUserAndOffer(List<AmazonOffer> discountedOffers) {
         Map<AmazonOffer, List<User>> offersForUsers = new HashMap<>();
-        for(AmazonOffer amazonOffer:discountedOffers){
+        for (AmazonOffer amazonOffer : discountedOffers) {
             offersForUsers.put(amazonOffer, amazonOffer.getUserEntityList());
         }
-        return  offersForUsers;
+        return offersForUsers;
     }
 
     public Map<String, BigDecimal> getActualCurrencies(List<AmazonOffer> changedOffers) throws Exception {
-        //checkPrices.addCurrency();
         Map<String, String> currencies = checkPrices.getCurrencyConversion();
         Map<String, BigDecimal> currencyExchange = new HashMap<>();
         List<String> currencySymbols = changedOffers.stream()
@@ -80,7 +84,6 @@ public class AmazonScheduler {
 
         for (int i = 0; i < currencySymbols.size(); i++) {
             logger.debug("Currency Exchange for offer {}", changedOffers.get(i).getAsin());
-            //currencyExchange.put(currencySymbols.get(i), checkPrices.updateCurrencies(currencies.get(currencySymbols.get(i))));
             currencyExchange.put(currencySymbols.get(i), checkPrices.updateCurrencies(currencyDao.findCurrencyByCurrencySymbol(currencySymbols.get(i)).getCurrency()));
         }
         return currencyExchange;
@@ -94,18 +97,13 @@ public class AmazonScheduler {
         List<AmazonOffer> discountedOffers = changedOffers.stream()
                 .filter(a -> a.getCurrentPrice().multiply(currencyExchange.get(a.getCurrencySymbol())).compareTo(a.getTargetPrice()) < 0)
                 .collect(Collectors.toList());
-        Map<AmazonOffer,List<User>> offersForUsers = findUserAndOffer(discountedOffers);
+        Map<AmazonOffer, List<User>> offersForUsers = findUserAndOffer(discountedOffers);
 
         if (!discountedOffers.isEmpty()) {
             mailer.sendAlert(discountedOffers, offersForUsers);
         }
 
 
-    }
-
-    private static MonetaryAmount toTargetCurrency(Map<String,BigDecimal> currencyExchange, AmazonOffer offerInOriginalCurrency, CurrencyUnit targetCurrency){
-        BigDecimal amount = offerInOriginalCurrency.getCurrentPrice().multiply(currencyExchange.get(targetCurrency.getCurrencyCode()));
-        return FastMoney.of(amount, targetCurrency);
     }
 
 
