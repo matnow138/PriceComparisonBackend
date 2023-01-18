@@ -1,5 +1,5 @@
 package com.kodilla.price.exception;
 
-public class OfferNotFound extends Exception{
+public class OfferNotFoundException extends Exception{
 
 }

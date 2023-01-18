@@ -2,7 +2,7 @@ package com.kodilla.price;
 
 import com.kodilla.price.domain.AmazonOfferDto;
 import com.kodilla.price.domain.UserDto;
-import com.kodilla.price.exception.OfferNotFound;
+import com.kodilla.price.exception.OfferNotFoundException;
 import com.kodilla.price.service.AmazonService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -30,17 +30,17 @@ public class AmazonController {
         return ResponseEntity.ok().build();
     }
 
-    @PatchMapping(value = "/updateOffer/")
-    public ResponseEntity<AmazonOfferDto> updateOffer(@RequestBody AmazonOfferDto amazonOfferDto) throws OfferNotFound {
+    @PatchMapping(value = "/updateOffer")
+    public ResponseEntity<AmazonOfferDto> updateOffer(@RequestBody AmazonOfferDto amazonOfferDto) throws OfferNotFoundException {
         return ResponseEntity.ok(amazonService.updateOffer(amazonOfferDto));
     }
 
-    @GetMapping(value = "/getOffers/")
+    @GetMapping(value = "/getOffers")
     public ResponseEntity<List<AmazonOfferDto>> getAllOffers() {
         return ResponseEntity.ok(amazonService.getAllOffers());
     }
 
-    @PatchMapping(value = "/refreshPrices/")
+    @PatchMapping(value = "/refreshPrices")
     public ResponseEntity<Void> refreshPrices() throws Exception {
         amazonService.refreshPrices();
         return ResponseEntity.ok().build();
@@ -53,13 +53,13 @@ public class AmazonController {
     }
 
     @GetMapping(value = "/getUsers")
-    public ResponseEntity<List<UserDto>> getUsersForOffer(long id) throws OfferNotFound{
+    public ResponseEntity<List<UserDto>> getUsersForOffer(long id) throws OfferNotFoundException {
         List<UserDto> userDtoList = amazonService.getOffersForUser(id);
         return ResponseEntity.ok(userDtoList);
     }
 
     @GetMapping(value = "/getOffer/{id}")
-    public ResponseEntity<AmazonOfferDto> getOffer(@PathVariable long id) throws OfferNotFound {
+    public ResponseEntity<AmazonOfferDto> getOffer(@PathVariable long id) throws OfferNotFoundException {
         return ResponseEntity.ok(amazonService.getOffer(id));
     }
 }

@@ -7,7 +7,7 @@ import com.kodilla.price.domain.AmazonOfferDto;
 import com.kodilla.price.domain.UserDto;
 import com.kodilla.price.entity.AmazonOffer;
 import com.kodilla.price.entity.User;
-import com.kodilla.price.exception.OfferNotFound;
+import com.kodilla.price.exception.OfferNotFoundException;
 import com.kodilla.price.mapper.AmazonMapper;
 import com.kodilla.price.mapper.UserMapper;
 import com.kodilla.price.repository.AmazonDao;
@@ -98,9 +98,9 @@ public class AmazonService {
         amazonDao.deleteById(id);
     }
 
-    public AmazonOfferDto updateOffer(AmazonOfferDto amazonOfferDto) throws OfferNotFound {
+    public AmazonOfferDto updateOffer(AmazonOfferDto amazonOfferDto) throws OfferNotFoundException {
         if(amazonOfferDto.getId()!=null){
-            AmazonOffer amazonOffer=amazonDao.findById(amazonOfferDto.getId()).orElseThrow(OfferNotFound::new);
+            AmazonOffer amazonOffer=amazonDao.findById(amazonOfferDto.getId()).orElseThrow(OfferNotFoundException::new);
             amazonOffer.setAsin(amazonOfferDto.getAsin());
             amazonOffer.setProductName(amazonOfferDto.getProduct_name());
             amazonOffer.setCurrentPrice(amazonOfferDto.getCurrentPrice());
@@ -142,13 +142,13 @@ public class AmazonService {
         amazonDao.save(amazonOffer);
     }
 
-    public void refreshPrice(String id) throws OfferNotFound, Exception {
-        AmazonOffer foundAmazon = amazonDao.findById(Long.valueOf(id)).orElseThrow(OfferNotFound::new);
+    public void refreshPrice(String id) throws OfferNotFoundException, Exception {
+        AmazonOffer foundAmazon = amazonDao.findById(Long.valueOf(id)).orElseThrow(OfferNotFoundException::new);
         CreateRequestForProductUpdate(foundAmazon);
     }
 
-    public List<UserDto> getOffersForUser(long id) throws OfferNotFound {
-        AmazonOffer amazonOffer = amazonDao.findById(id).orElseThrow(OfferNotFound::new);
+    public List<UserDto> getOffersForUser(long id) throws OfferNotFoundException {
+        AmazonOffer amazonOffer = amazonDao.findById(id).orElseThrow(OfferNotFoundException::new);
         List<User> userList = amazonOffer.getUserEntityList();
         List<UserDto> userDtoList = new ArrayList<>();
         for (User user : userList) {
@@ -157,8 +157,8 @@ public class AmazonService {
         return userDtoList;
     }
 
-    public AmazonOfferDto getOffer(long id) throws OfferNotFound {
-        AmazonOffer amazonOffer = amazonDao.findById(id).orElseThrow(OfferNotFound::new);
+    public AmazonOfferDto getOffer(long id) throws OfferNotFoundException {
+        AmazonOffer amazonOffer = amazonDao.findById(id).orElseThrow(OfferNotFoundException::new);
         AmazonOfferDto amazonOfferDto = amazonMapper.mapToAmazonDto(amazonOffer);
         return amazonOfferDto;
     }

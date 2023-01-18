@@ -9,6 +9,7 @@ public class CurrencyMapper {
 
     public Currency mapToCurrency(CurrencyDto currencyDto) {
         return Currency.builder()
+                .id(currencyDto.getId())
                 .currency(currencyDto.getCurrency())
                 .currencySymbol(currencyDto.getCurrencySymbol())
                 .build();
@@ -16,6 +17,7 @@ public class CurrencyMapper {
 
     public CurrencyDto mapToCurrencyDto(Currency currency) {
         return CurrencyDto.builder()
+                .id(currency.getId())
                 .currency(currency.getCurrency())
                 .currencySymbol(currency.getCurrencySymbol())
                 .build();

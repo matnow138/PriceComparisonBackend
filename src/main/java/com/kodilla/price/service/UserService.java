@@ -26,10 +26,10 @@ public class UserService {
 
     private final AmazonMapper amazonMapper;
 
-    public ResponseEntity<Void> createUser(UserDto userDto) {
+    public UserDto createUser(UserDto userDto) {
         User user = userMapper.mapToUser(userDto);
-        userDao.save(user);
-        return ResponseEntity.ok().build();
+        User savedUser = userDao.save(user);
+        return userMapper.mapToUserDto(savedUser);
     }
 
     public UserDto findUserById(long id) throws UserNotFoundException {

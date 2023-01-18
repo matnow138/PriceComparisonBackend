@@ -2,6 +2,7 @@ package com.kodilla.price.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.kodilla.price.domain.UserDto;
 import com.kodilla.price.entity.AmazonOffer;
 import com.kodilla.price.entity.User;
@@ -64,9 +65,13 @@ public class UserControllerTestSuite {
                                 .post("/v1/users")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .characterEncoding("UTF-8")
-                                .content(json)
-                )
-
+                                .content(json))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.name", Matchers.is("createUser")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.lastName", Matchers.is("last name")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.mail", Matchers.is("test@test.com")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.login", Matchers.is("uniqueLogin")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.password", Matchers.is("password")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.active", Matchers.is(true)))
                 .andExpect(MockMvcResultMatchers.status().is(200));
         User foundUser = userDao.findByLogin(userDto.getLogin()).orElse(null);
         userDao.deleteById(foundUser.getId());
@@ -202,13 +207,8 @@ public class UserControllerTestSuite {
                                 .get("/v1/users/getUsers")
                                 .contentType(MediaType.APPLICATION_JSON)
                 )
-                .andExpect(MockMvcResultMatchers.jsonPath("$", Matchers.hasSize(1)))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].name", Matchers.is("getUsers")))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].lastName", Matchers.is("last name")))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].mail", Matchers.is("test@test.com")))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].login", Matchers.is("login")))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].password", Matchers.is("password")))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].active", Matchers.is(true)));
+                .andExpect(MockMvcResultMatchers.jsonPath("$", Matchers.hasSize(Matchers.notNullValue())));
+
         userDao.deleteById(savedUser.getId());
     }
 

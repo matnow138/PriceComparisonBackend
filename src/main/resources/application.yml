@@ -51,4 +51,11 @@ eureka:
   client:
     serviceUrl:
       defaultZone: http://discUser:discPassword@localhost:8082/eureka
+  logging:
+    level:
+      org:
+        springframework:
+          web:
+            filter:
+              CommonsRequestLoggingFilter: DEBUG
 

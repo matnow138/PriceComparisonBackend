@@ -15,13 +15,14 @@ public class CurrencyService {
     private final CurrencyMapper currencyMapper;
 
     public void addCurrency(String currencySymbol, String currency) {
-        CurrencyDto currencyDto = CurrencyDto.builder()
-                .currency(currency)
-                .currencySymbol(currencySymbol)
-                .build();
-        Currency currencyEntity = currencyMapper.mapToCurrency(currencyDto);
-        currencyDao.save(currencyEntity);
-
+        if(currencyDao.findCurrencyByCurrency(currency)!=null){
+            CurrencyDto currencyDto = CurrencyDto.builder()
+                    .currency(currency)
+                    .currencySymbol(currencySymbol)
+                    .build();
+            Currency currencyEntity = currencyMapper.mapToCurrency(currencyDto);
+            currencyDao.save(currencyEntity);
+        }
     }
 
     public String getCurrencyName(String currencySymbol) {

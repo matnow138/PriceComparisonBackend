@@ -42,7 +42,7 @@ public class AmazonScheduler {
     @Scheduled(fixedRate = 3600000)
     public void checkAmazonPromotions() throws Exception {
         List<AmazonOffer> allOffersWithSubscriptions = amazonDao.getAll();
-        logger.debug(allOffersWithSubscriptions.get(1).getAsin());
+        logger.debug(allOffersWithSubscriptions.toString());
         List<AmazonOffer> changedOffers = allOffersWithSubscriptions.stream()
                 .filter(this::currentPriceIsLower)
                 .collect(Collectors.toList());
@@ -75,7 +75,6 @@ public class AmazonScheduler {
     }
 
     public Map<String, BigDecimal> getActualCurrencies(List<AmazonOffer> changedOffers) throws Exception {
-        //checkPrices.addCurrency();
         Map<String, String> currencies = checkPrices.getCurrencyConversion();
         Map<String, BigDecimal> currencyExchange = new HashMap<>();
         List<String> currencySymbols = changedOffers.stream()

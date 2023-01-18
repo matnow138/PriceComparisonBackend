@@ -45,13 +45,8 @@ public class CheckPrices {
     public void checkTargetPrice() throws Exception {
         Currency currency = currencyDao.findCurrencyByCurrency("$");
 
-        // BigDecimal exchangeRate = updateCurrencies(currencies1.get(0));
         BigDecimal exchangeRate = updateCurrencies(currency.getCurrency());
-
-        //List<AmazonOffer> filteredOffers = amazonDao.findAllByCurrencySymbol(currencyConversion.get(currencies1.get(0)));
         List<AmazonOffer> filteredOffers = amazonDao.findAllByCurrencySymbol(currencyConversion.get(currency.getCurrencySymbol()));
-        //System.out.println(exchangeRate);
-        //System.out.println(filteredOffers.get(0).getAsin());
         List<AmazonOffer> discountedOffers = filteredOffers.stream()
                 .filter(p -> ((p.getCurrentPrice().multiply(exchangeRate)).compareTo(p.getTargetPrice()) < 0))
                 .collect(Collectors.toList());

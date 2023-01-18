@@ -21,9 +21,9 @@ public class UserController {
 
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> createUser(@RequestBody UserDto userDto) {
-        userService.createUser(userDto);
-        return ResponseEntity.ok(null);
+    public ResponseEntity<UserDto> createUser(@RequestBody UserDto userDto) {
+        UserDto createdUser = userService.createUser(userDto);
+        return ResponseEntity.ok().body(createdUser);
     }
 
     @GetMapping(value = "/searchUser/{id}")

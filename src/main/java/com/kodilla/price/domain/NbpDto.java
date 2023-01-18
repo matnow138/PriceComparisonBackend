@@ -18,7 +18,7 @@ import java.util.List;
 public class NbpDto {
     @JsonProperty("code")
     private String currency;
-
+    @Builder.Default
     private LocalDate addedDate = LocalDate.now();
     private List<RatesDto> rates;
 
