@@ -1,0 +1,65 @@
+create table currency
+(
+    id             bigint auto_increment
+        primary key,
+    currency       varchar(255) null,
+    currencySymbol varchar(255) null
+)
+    engine = MyISAM;
+
+create table user
+(
+    id       bigint auto_increment
+        primary key,
+    isActive bit          not null,
+    lastName varchar(255) null,
+    login    varchar(255) not null,
+    mail     varchar(255) null,
+    name     varchar(255) null,
+    password varchar(255) not null
+)
+    engine = MyISAM;
+
+create table amazonoffer
+(
+    id             bigint auto_increment
+        primary key,
+    AddedDate      date           null,
+    asin           varchar(255)   not null,
+    CurrencySymbol varchar(255)   null,
+    CurentPrice    decimal(19, 2) null,
+    locale         varchar(255)   null,
+    ProductName    varchar(255)   null,
+    TargetPrice    decimal(19, 2) null
+)
+    engine = MyISAM;
+
+create table amazon_offers
+(
+    user_id   bigint not null,
+    amazon_id bigint not null
+)
+    engine = MyISAM;
+
+create index FK6l25179d0m4r1lxvm4l252vxx
+    on amazon_offers (user_id);
+
+create index FK7b81yaoqjesopbtw9yi99ntau
+    on amazon_offers (amazon_id);
+
+create table nbp
+(
+    id            bigint auto_increment
+        primary key,
+    added_date    date           null,
+    currency      varchar(255)   null,
+    exchange_rate decimal(19, 2) null,
+    addedDate     date           null,
+    exchangeRate  decimal(19, 2) null
+)
+    engine = MyISAM;
+
+
+
+
+
