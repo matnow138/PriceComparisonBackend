@@ -1,0 +1,1 @@
+INSERT INTO currency VALUES(1,'USD','$');

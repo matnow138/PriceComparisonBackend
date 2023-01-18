@@ -18,10 +18,14 @@ spring:
     username: user
     url: jdbc:mysql://localhost:3306/prices?serverTimezone=Europe/Warsaw&allowPublicKeyRetrieval=true&useSSL=False
     password: password
+  sql:
+    init:
+      mode: always
   jpa:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL5Dialect
+      ddl-auto: none
     database: mysql
     show-sql: true
     hibernate:
@@ -58,4 +62,5 @@ eureka:
           web:
             filter:
               CommonsRequestLoggingFilter: DEBUG
+
 
