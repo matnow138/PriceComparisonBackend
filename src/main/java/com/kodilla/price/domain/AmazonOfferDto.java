@@ -16,8 +16,8 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 public class AmazonOfferDto {
-
-    private long id;
+    @JsonProperty("id")
+    private Long id;
     @JsonProperty("asin")
     private String asin;
     @JsonProperty("product_name")
@@ -28,6 +28,7 @@ public class AmazonOfferDto {
     private String locale;
     @SerializedName("currency_symbol")
     private String currency_symbol;
+    @JsonProperty("targetPrice")
     private BigDecimal targetPrice;
     private List<User> userEntityList;
 

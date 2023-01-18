@@ -22,7 +22,7 @@ public class AmazonOffer {
     private LocalDate addedDate = LocalDate.now();
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     @NotNull
     private String asin;
     @Column(name = "ProductName")

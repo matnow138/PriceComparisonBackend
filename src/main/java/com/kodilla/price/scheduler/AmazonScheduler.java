@@ -85,7 +85,6 @@ public class AmazonScheduler {
 
         for (int i = 0; i < currencySymbols.size(); i++) {
             logger.debug("Currency Exchange for offer {}", changedOffers.get(i).getAsin());
-            //currencyExchange.put(currencySymbols.get(i), checkPrices.updateCurrencies(currencies.get(currencySymbols.get(i))));
             currencyExchange.put(currencySymbols.get(i), checkPrices.updateCurrencies(currencyDao.findCurrencyByCurrencySymbol(currencySymbols.get(i)).getCurrency()));
         }
         return currencyExchange;

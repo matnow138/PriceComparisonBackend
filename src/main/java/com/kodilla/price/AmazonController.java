@@ -2,6 +2,7 @@ package com.kodilla.price;
 
 import com.kodilla.price.domain.AmazonOfferDto;
 import com.kodilla.price.domain.UserDto;
+import com.kodilla.price.exception.OfferNotFound;
 import com.kodilla.price.service.AmazonService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +31,7 @@ public class AmazonController {
     }
 
     @PatchMapping(value = "/updateOffer/")
-    public ResponseEntity<AmazonOfferDto> updateOffer(@RequestBody AmazonOfferDto amazonOfferDto) {
+    public ResponseEntity<AmazonOfferDto> updateOffer(@RequestBody AmazonOfferDto amazonOfferDto) throws OfferNotFound {
         return ResponseEntity.ok(amazonService.updateOffer(amazonOfferDto));
     }
 
@@ -52,13 +53,13 @@ public class AmazonController {
     }
 
     @GetMapping(value = "/getUsers")
-    public ResponseEntity<List<UserDto>> getUsersForOffer(long id) {
+    public ResponseEntity<List<UserDto>> getUsersForOffer(long id) throws OfferNotFound{
         List<UserDto> userDtoList = amazonService.getOffersForUser(id);
         return ResponseEntity.ok(userDtoList);
     }
 
     @GetMapping(value = "/getOffer/{id}")
-    public ResponseEntity<AmazonOfferDto> getOffer(@PathVariable long id) {
+    public ResponseEntity<AmazonOfferDto> getOffer(@PathVariable long id) throws OfferNotFound {
         return ResponseEntity.ok(amazonService.getOffer(id));
     }
 }

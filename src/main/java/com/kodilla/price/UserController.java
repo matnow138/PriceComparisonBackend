@@ -2,6 +2,7 @@ package com.kodilla.price;
 
 import com.kodilla.price.domain.AmazonOfferDto;
 import com.kodilla.price.domain.UserDto;
+import com.kodilla.price.entity.User;
 import com.kodilla.price.exception.UserNotFoundException;
 import com.kodilla.price.service.UserService;
 import lombok.AllArgsConstructor;
@@ -31,7 +32,7 @@ public class UserController {
     }
 
     @PatchMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<UserDto> updateUser(@RequestBody UserDto userDto) {
+    public ResponseEntity<UserDto> updateUser(@RequestBody UserDto userDto) throws UserNotFoundException {
         return ResponseEntity.ok(userService.updateUser(userDto));
     }
 
@@ -61,7 +62,7 @@ public class UserController {
     }
 
     @GetMapping(value = "/getOffers/{id}")
-    public ResponseEntity<List<AmazonOfferDto>> getOffersForUser(@PathVariable long id) {
+    public ResponseEntity<List<AmazonOfferDto>> getOffersForUser(@PathVariable long id) throws UserNotFoundException {
         List<AmazonOfferDto> amazonOfferDtoList = userService.findOffersForUser(id);
         return ResponseEntity.ok(amazonOfferDtoList);
     }

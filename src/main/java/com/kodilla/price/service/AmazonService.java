@@ -7,6 +7,7 @@ import com.kodilla.price.domain.AmazonOfferDto;
 import com.kodilla.price.domain.UserDto;
 import com.kodilla.price.entity.AmazonOffer;
 import com.kodilla.price.entity.User;
+import com.kodilla.price.exception.OfferNotFound;
 import com.kodilla.price.mapper.AmazonMapper;
 import com.kodilla.price.mapper.UserMapper;
 import com.kodilla.price.repository.AmazonDao;
@@ -59,7 +60,6 @@ public class AmazonService {
         HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
 
         String body = response.body();
-        System.out.println(body);
         AmazonOfferDto[] productsArrayNode = arrayReader.readValue(body, AmazonOfferDto[].class);
 
         AmazonOffer amazonOffer = amazonMapper.mapToAmazon(productsArrayNode[0]);
@@ -82,7 +82,6 @@ public class AmazonService {
         HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
 
         String body = response.body();
-        //System.out.println(body);
         AmazonOfferDto[] productsArrayNode = arrayReader.readValue(body, AmazonOfferDto[].class);
         return amazonMapper.mapToAmazon(productsArrayNode[0]);
 
@@ -99,11 +98,20 @@ public class AmazonService {
         amazonDao.deleteById(id);
     }
 
-    public AmazonOfferDto updateOffer(AmazonOfferDto amazonOfferDto) {
-        AmazonOffer amazonOffer = amazonMapper.mapToAmazon(amazonOfferDto);
-        amazonDao.save(amazonOffer);
-        AmazonOfferDto amazonOfferDto1 = amazonMapper.mapToAmazonDto(amazonOffer);
-        return amazonOfferDto1;
+    public AmazonOfferDto updateOffer(AmazonOfferDto amazonOfferDto) throws OfferNotFound {
+        if(amazonOfferDto.getId()!=null){
+            AmazonOffer amazonOffer=amazonDao.findById(amazonOfferDto.getId()).orElseThrow(OfferNotFound::new);
+            amazonOffer.setAsin(amazonOfferDto.getAsin());
+            amazonOffer.setProductName(amazonOfferDto.getProduct_name());
+            amazonOffer.setCurrentPrice(amazonOfferDto.getCurrentPrice());
+            amazonOffer.setLocale(amazonOfferDto.getLocale());
+            amazonOffer.setCurrencySymbol(amazonOfferDto.getCurrency_symbol());
+            amazonOffer.setTargetPrice(amazonOfferDto.getTargetPrice());
+            amazonDao.save(amazonOffer);
+            return amazonMapper.mapToAmazonDto(amazonOffer);
+        }else{
+            return amazonOfferDto;
+        }
     }
 
     public List<AmazonOfferDto> getAllOffers() {
@@ -134,13 +142,13 @@ public class AmazonService {
         amazonDao.save(amazonOffer);
     }
 
-    public void refreshPrice(String id) throws Exception {
-        AmazonOffer foundAmazon = amazonDao.findById(Long.valueOf(id)).orElse(null);
+    public void refreshPrice(String id) throws OfferNotFound, Exception {
+        AmazonOffer foundAmazon = amazonDao.findById(Long.valueOf(id)).orElseThrow(OfferNotFound::new);
         CreateRequestForProductUpdate(foundAmazon);
     }
 
-    public List<UserDto> getOffersForUser(long id) {
-        AmazonOffer amazonOffer = amazonDao.findById(id).orElse(null);
+    public List<UserDto> getOffersForUser(long id) throws OfferNotFound {
+        AmazonOffer amazonOffer = amazonDao.findById(id).orElseThrow(OfferNotFound::new);
         List<User> userList = amazonOffer.getUserEntityList();
         List<UserDto> userDtoList = new ArrayList<>();
         for (User user : userList) {
@@ -149,8 +157,8 @@ public class AmazonService {
         return userDtoList;
     }
 
-    public AmazonOfferDto getOffer(long id) {
-        AmazonOffer amazonOffer = amazonDao.findById(id).orElse(null);
+    public AmazonOfferDto getOffer(long id) throws OfferNotFound {
+        AmazonOffer amazonOffer = amazonDao.findById(id).orElseThrow(OfferNotFound::new);
         AmazonOfferDto amazonOfferDto = amazonMapper.mapToAmazonDto(amazonOffer);
         return amazonOfferDto;
     }

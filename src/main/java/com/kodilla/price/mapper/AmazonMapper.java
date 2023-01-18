@@ -10,16 +10,28 @@ import java.time.LocalDate;
 public class AmazonMapper {
 
     public AmazonOffer mapToAmazon(AmazonOfferDto amazonOfferDto) {
-        return AmazonOffer.builder()
-                .id(amazonOfferDto.getId())
-                .asin(amazonOfferDto.getAsin())
-                .productName(amazonOfferDto.getProduct_name())
-                .addedDate(LocalDate.now())
-                .currentPrice(amazonOfferDto.getCurrentPrice())
-                .locale(amazonOfferDto.getLocale())
-                .currencySymbol(amazonOfferDto.getCurrency_symbol())
-                .targetPrice(amazonOfferDto.getTargetPrice())
-                .build();
+        if(amazonOfferDto.getId()!=null) {
+            return AmazonOffer.builder()
+                    .id(amazonOfferDto.getId())
+                    .asin(amazonOfferDto.getAsin())
+                    .productName(amazonOfferDto.getProduct_name())
+                    .addedDate(LocalDate.now())
+                    .currentPrice(amazonOfferDto.getCurrentPrice())
+                    .locale(amazonOfferDto.getLocale())
+                    .currencySymbol(amazonOfferDto.getCurrency_symbol())
+                    .targetPrice(amazonOfferDto.getTargetPrice())
+                    .build();
+        }else{
+            return AmazonOffer.builder()
+                    .asin(amazonOfferDto.getAsin())
+                    .productName(amazonOfferDto.getProduct_name())
+                    .addedDate(LocalDate.now())
+                    .currentPrice(amazonOfferDto.getCurrentPrice())
+                    .locale(amazonOfferDto.getLocale())
+                    .currencySymbol(amazonOfferDto.getCurrency_symbol())
+                    .targetPrice(amazonOfferDto.getTargetPrice())
+                    .build();
+        }
     }
 
     public AmazonOfferDto mapToAmazonDto(AmazonOffer amazonOffer) {

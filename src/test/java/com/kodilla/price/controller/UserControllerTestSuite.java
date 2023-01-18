@@ -37,8 +37,7 @@ public class UserControllerTestSuite {
     private UserMapper userMapper;
     @Autowired
     private UserDao userDao;
-    @Autowired
-    private AmazonMapper amazonMapper;
+
     @Autowired
     private AmazonDao amazonDao;
 
