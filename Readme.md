@@ -1,9 +1,9 @@
 Repozytorium:
-backend: https://github.com/matnow138/PriceComparisonBackend/tree/9fd2a712af5ae9b9a03694d829de43bc63d53021
-Frontend: https://github.com/matnow138/PriceFrontend/tree/d517245258a68eeda5893e6289cfeacfbcc9249b
-EurekaCloud: https://github.com/matnow138/EurekaCloud/tree/5a0454c1a5c0d73c0d459bbba53443ec74f61b9c
-EurekaServer: https://github.com/matnow138/EurekaServer/tree/20de4ef36875bb6e59bbc1483ad53a71672453dd
-Gateway: https://github.com/matnow138/EurekaServer/tree/20de4ef36875bb6e59bbc1483ad53a71672453dd
+backend: https://github.com/matnow138/PriceComparisonBackend/
+Frontend: https://github.com/matnow138/PriceFrontend/
+EurekaCloud: https://github.com/matnow138/EurekaCloud/
+EurekaServer: https://github.com/matnow138/EurekaServer/
+Gateway: https://github.com/matnow138/Gateway
 
 Uruchamianie:
 
