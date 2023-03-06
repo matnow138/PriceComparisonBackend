@@ -1,20 +1,17 @@
 Repozytorium:
 backend: https://github.com/matnow138/PriceComparisonBackend/
 Frontend: https://github.com/matnow138/PriceFrontend/
-EurekaCloud: https://github.com/matnow138/EurekaCloud/
-EurekaServer: https://github.com/matnow138/EurekaServer/
-Gateway: https://github.com/matnow138/Gateway
+
 
 Uruchamianie:
 
-1. EurekaCloud
-2. EurekaServer
-3. Gateway
-4. Backend
-5. Frontend
+
+1. Backend
+2. Frontend
 
 Uwagi:
 
+Należy utworzyć bazę danych Mysql pod adresem: localhost:3306, baza prices, użytkownik user, hasło password
 Backend ma schema.sql i data.sql ustawione na uruchamianie za każdym uruchomieniem programu - może to wyrzucać błędy jeśli program będzie odpalany ponownie.
 Należy wtedy usunąć tabele w bazie. ewentualnie usunąć tylko tabelę currency.
 

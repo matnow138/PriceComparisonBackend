@@ -3,17 +3,7 @@ server:
 spring:
   application:
     name: backend
-  profiles:
-    active: master
-  cloud:
-    config:
-      name: cloud
-      enabled: true
-      username: configUser
-      password: configPassword
-    discovery:
-      service-id: cloud
-      enabled: true
+
   datasource:
     username: user
     url: jdbc:mysql://localhost:3306/prices?serverTimezone=Europe/Warsaw&allowPublicKeyRetrieval=true&useSSL=False
@@ -51,16 +41,5 @@ application:
       expired-time: 3600
       secret: EWtQ,dsBAMWT5Qqy0X%8A]yPmmiyCHe_HG8Ub#]LA-+HWY^g,-LYC^YvYwQrG:57Eu,qk>cN)@Xun9>HowpDBx0#J1ds>KRnLyvD
 
-eureka:
-  client:
-    serviceUrl:
-      defaultZone: http://discUser:discPassword@localhost:8082/eureka
-  logging:
-    level:
-      org:
-        springframework:
-          web:
-            filter:
-              CommonsRequestLoggingFilter: DEBUG
 
 
